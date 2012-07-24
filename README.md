@@ -7,8 +7,7 @@ my priority list. I plan to give it some more love in the near future.
 
 ## What currently works
 
-For the moment, Migraine is simply an expression evaluator. It supports the following operations :
-
+#### Expression Evaluator
 - Add ( + )
 - Unary and binary minus ( - )
 - Multiply ( * )
@@ -16,10 +15,13 @@ For the moment, Migraine is simply an expression evaluator. It supports the foll
 - Exponent ( ^ )
 - Grouping operations with parenthesis
 
+#### Brainfuck Interpreter and Debugger
+- Fully functional interpreter (uses ints instead of chars, I plan to make this configurable)
+
 ## Next on the todo list
 
 - Variable assignment
 - Boolean logic and operators
-- Custom Brainfuck interpreter (which will use numbers instead of ASCII characters)
+- Brainfuck Debugger which will support breakpoints and step-by-step execution, plus displaying and editing of the memory cells
 
 [1]: http://en.wikipedia.org/wiki/Brainfuck
