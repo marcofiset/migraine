@@ -22,7 +22,7 @@ my priority list. I plan to give it some more love in the near future.
 
 - Variable assignment
 - Boolean logic and operators
-- Unit test the hell out the Interpreter
+- Unit test the hell out of the Interpreter
 - Brainfuck Debugger which will support breakpoints and step-by-step execution, plus displaying and editing of the memory cells
 
 [1]: http://en.wikipedia.org/wiki/Brainfuck
