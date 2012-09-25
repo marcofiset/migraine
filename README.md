@@ -1,9 +1,13 @@
 # Migraine - Unfuck Your Brain
 
-### A language that compiles down to [Brainfuck][1]
+### A set of projects related to [Brainfuck][1]
 
-Migraine will eventually be a complete programming language. I created this project for learning purposes only. It is still a work in progress, and it is not very high on
-my priority list. I plan to give it some more love in the near future.
+##What is it / What will it be
+
+Migraine is a Brainfuck interpreter, debugger and will eventually consist of a 
+complete programming language that compiles down to Brainfuck. I created this project for 
+learning purposes only. It is still a work in progress, and it is not very high on my priority list. 
+I plan to give it some more love in the near future.
 
 ## What currently works
 
