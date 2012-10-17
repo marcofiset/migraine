@@ -43,10 +43,12 @@ namespace Brainfuck
 
             actions = new Dictionary<char, Action>();
 
+            //Pointer manipulation
             actions.Add('>', () => 
             { 
                 pointerPosition++;
 
+                //Allocate new memory cells as we go
                 if (memory.Count <= pointerPosition)
                     memory.Add(0);
             });
@@ -56,12 +58,14 @@ namespace Brainfuck
                 pointerPosition--;
 
                 if (pointerPosition < 0)
-                    pointerPosition = memory.Count - 1;
+                    pointerPosition = 0;
             });
 
+            //Current cell manipulation
             actions.Add('+', () => memory[pointerPosition]++);
             actions.Add('-', () => memory[pointerPosition]--);
 
+            //Input and output
             actions.Add(',', () => memory[pointerPosition] = Convert.ToInt32(input.Get()));
             actions.Add('.', () => output.Write(memory[pointerPosition].ToString()));
 
@@ -69,13 +73,16 @@ namespace Brainfuck
             {
                 loopIndexes.Push(currentIndex);
 
+                //Enter the loop if the current memory cell is different than zero
                 if (memory[pointerPosition] != 0)
                     return;
 
+                //Else we skip until the end of that loop
                 do
                 {
                     currentIndex++;
 
+                    //Stack-based logic in case we encounter any inner loops
                     if (programString[currentIndex] == '[')
                     {
                         loopIndexes.Push(currentIndex);
@@ -90,6 +97,7 @@ namespace Brainfuck
 
             actions.Add(']', () =>
             {
+                //Go back to the start of the loop
                 if (memory[pointerPosition] != 0)
                     currentIndex = loopIndexes.Peek();
                 else
@@ -97,9 +105,14 @@ namespace Brainfuck
             });
         }
 
+        /// <summary>
+        /// Executes the given Brainfuck program
+        /// </summary>
+        /// <param name="program">A string containing the brainfuck program to execute</param>
         public void Execute(string program)
         {
             if (program == null) throw new ArgumentNullException("program");
+            ValidateSourceFile(program);
 
             programString = program;
             pointerPosition = 0;
@@ -110,8 +123,22 @@ namespace Brainfuck
             for (currentIndex = 0; currentIndex < program.Length; currentIndex++)
             {
                 char currentChar = programString[currentIndex];
-                if (actions.ContainsKey(currentChar))
-                    actions[currentChar]();
+                actions[currentChar]();
+            }
+        }
+
+        /// <summary>
+        /// Validates a given brainfuck source file to make sure it is a valid program
+        /// </summary>
+        /// <param name="program">A string containing the program to validate</param>
+        private void ValidateSourceFile(string program)
+        {
+            if (program == null) throw new ArgumentNullException("program");
+
+            for (int i = 0; i < program.Length; i++)
+            {
+                if (!actions.ContainsKey(program[i]))
+                    throw new Exception("Invalid character in source file");
             }
         }
     }
