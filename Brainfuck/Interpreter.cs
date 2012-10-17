@@ -13,10 +13,34 @@ namespace Brainfuck
         private Stack<int> loopIndexes;
         private List<int?> memory;
 
+        private IInputProvider input;
+        private IOutputProvider output;
+
         private Dictionary<char, Action> actions;
 
-        public Interpreter() 
+        /// <summary>
+        /// Constructor with which you can supply a single input/output source
+        /// </summary>
+        /// <param name="inputOutput">The input/output provider</param>
+        public Interpreter(IInputOutputProvider inputOutput)
+            : this(inputOutput, inputOutput)
         {
+
+        }
+
+        /// <summary>
+        /// Constructor with which you can supply the input and the output provider independently
+        /// </summary>
+        /// <param name="input">The input provider</param>
+        /// <param name="output">The output provider</param>
+        public Interpreter(IInputProvider input, IOutputProvider output) 
+        {
+            if (input == null) throw new ArgumentNullException("input");
+            if (output == null) throw new ArgumentNullException("output");
+
+            this.input = input;
+            this.output = output;
+
             actions = new Dictionary<char, Action>();
 
             actions.Add('>', () => 
@@ -38,8 +62,8 @@ namespace Brainfuck
             actions.Add('+', () => memory[pointerPosition]++);
             actions.Add('-', () => memory[pointerPosition]--);
 
-            actions.Add(',', () => memory[pointerPosition] = Convert.ToInt32(Console.ReadLine()));
-            actions.Add('.', () => Console.WriteLine(memory[pointerPosition]));
+            actions.Add(',', () => memory[pointerPosition] = Convert.ToInt32(input.Get()));
+            actions.Add('.', () => output.Write(memory[pointerPosition].ToString()));
 
             actions.Add('[', () =>
             {
@@ -67,7 +91,9 @@ namespace Brainfuck
             actions.Add(']', () =>
             {
                 if (memory[pointerPosition] != 0)
-                    currentIndex = loopIndexes.Pop();
+                    currentIndex = loopIndexes.Peek();
+                else
+                    loopIndexes.Pop();
             });
         }
 
@@ -83,7 +109,9 @@ namespace Brainfuck
 
             for (currentIndex = 0; currentIndex < program.Length; currentIndex++)
             {
-                actions[programString[currentIndex]]();
+                char currentChar = programString[currentIndex];
+                if (actions.ContainsKey(currentChar))
+                    actions[currentChar]();
             }
         }
     }

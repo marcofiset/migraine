@@ -8,8 +8,8 @@
     <ProjectGuid>{0B80FBEA-BDFB-4B37-A5F0-FB445B87A877}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BrainfuckInterpret</RootNamespace>
-    <AssemblyName>BrainfuckInterpret</AssemblyName>
+    <RootNamespace>Brainfuck</RootNamespace>
+    <AssemblyName>Brainfuck</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,7 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IInputOutputProvider.cs" />
+    <Compile Include="IInputProvider.cs" />
     <Compile Include="Interpreter.cs" />
+    <Compile Include="IOutputProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

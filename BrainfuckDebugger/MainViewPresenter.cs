@@ -1,13 +1,14 @@
 ﻿using BrainfuckDebugger.Interfaces;
 using System.IO;
 using System;
+using Brainfuck;
 
 namespace BrainfuckDebugger
 {
     /// <summary>
     /// Object that handles the business logic of the MainView
     /// </summary>
-    public class MainViewPresenter
+    public class MainViewPresenter : IInputOutputProvider
     {
         private IMainView view;
 
@@ -39,7 +40,9 @@ namespace BrainfuckDebugger
         /// </summary>
         public void ExecuteProgram()
         {
-            var interpreter = new Brainfuck.Interpreter();
+            view.ClearOutput();
+
+            var interpreter = new Brainfuck.Interpreter(this);
             interpreter.Execute(view.BrainfuckProgram);
         }
 
@@ -51,13 +54,23 @@ namespace BrainfuckDebugger
             string fileName = view.ChooseFile(FileAction.Save);
             if (String.IsNullOrEmpty(fileName)) return;
 
-            var writer = new StreamWriter(fileName);
-            
-            writer.Flush();
-            writer.Write(view.BrainfuckProgram);
+            using (var writer = new StreamWriter(fileName))
+            {
+                writer.Flush();
+                writer.Write(view.BrainfuckProgram);
 
-            writer.Close();
-            writer.Dispose();
+                writer.Close();
+            }
+        }
+
+        string IInputProvider.Get()
+        {
+            return view.GetInput();
+        }
+
+        void IOutputProvider.Write(string value)
+        {
+            view.WriteToOutput(value);
         }
     }
 }

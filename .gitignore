@@ -1,0 +1,9 @@
+*.suo
+*.user
+*/bin
+*/obj
+Migraine.userprefs
+
+BrainfuckDebugger/gtk-gui/generated.cs
+
+BrainfuckDebugger/gtk-gui/gui.stetic

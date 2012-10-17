@@ -1,6 +1,7 @@
 ﻿using System.Windows.Forms;
 using BrainfuckDebugger.Interfaces;
 using System;
+using Brainfuck;
 
 namespace BrainfuckDebugger
 {
@@ -17,6 +18,12 @@ namespace BrainfuckDebugger
             set { programTextBox.Text = value; }
         }
 
+        private string ProgramOutput
+        {
+            get { return outputTextBox.Text; }
+            set { outputTextBox.Text = value; }
+        }
+
         public MainForm()
         {
             InitializeComponent();
@@ -27,9 +34,11 @@ namespace BrainfuckDebugger
         /// <summary>
         /// Asks the user to choose a file through an OpenFileDialog
         /// </summary>
+        /// <param name="action">The action we want to do with the file</param>
         /// <returns>The file name chosen by the user</returns>
         public string ChooseFile(FileAction action)
         {
+
             FileDialog fileDialog;
 
             switch (action)
@@ -51,6 +60,44 @@ namespace BrainfuckDebugger
             return fileDialog.FileName;
         }
 
+        /// <summary>
+        /// Gets input for the brainfuck program
+        /// </summary>
+        /// <returns></returns>
+        public string GetInput()
+        {
+            if (promptForInputRadioButton.Checked)
+            {
+                using (var inputForm = new InputForm())
+                {
+                    inputForm.ShowDialog();
+                    return inputForm.Value;
+                }
+            }
+
+            throw new Exception("Input has been pre-supplied");
+        }
+
+        /// <summary>
+        /// Clears the program output
+        /// </summary>
+        public void ClearOutput()
+        {
+            ProgramOutput = "";
+        }
+
+        /// <summary>
+        /// Writes the output of the program
+        /// </summary>
+        /// <param name="value"></param>
+        public void WriteToOutput(string value)
+        {
+            if (ProgramOutput != "")
+                ProgramOutput += Environment.NewLine;
+
+            ProgramOutput += value;
+        }
+
         private void loadFromFileButton_Click(object sender, System.EventArgs e)
         {
             presenter.LoadFromFile();
@@ -64,6 +111,11 @@ namespace BrainfuckDebugger
         private void saveToFileButton_Click(object sender, System.EventArgs e)
         {
             presenter.SaveToFile();
+        }
+
+        private void preSupplyInputRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            inputTextBox.Enabled = preSupplyInputRadioButton.Checked;
         }
     }
 }
