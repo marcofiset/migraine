@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using NUnit.ConsoleRunner;
+using System;
 using System.Linq;
-using System.Text;
-using NUnit.ConsoleRunner;
 
-namespace ExpressionEvaluator.TestRunner
+namespace ExpressionEvaluator.Tests2
 {
     class Program
     {
         static void Main(string[] args)
         {
-            string newArgs = "";
-			//TODO : Use String.Join();
+            String newArgs = "";
             args.ToList().ForEach(s => newArgs += " " + s);
 
             Runner.Main(newArgs.Split(";".ToCharArray()));

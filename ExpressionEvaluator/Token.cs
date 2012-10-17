@@ -14,29 +14,5 @@ namespace ExpressionEvaluator
             this.Value = value;
             this.Type = type;
         }
-
-        public override bool Equals(object obj)
-		{
-			Token other = obj as Token;
-			
-			if (other == null)
-				return false;
-			
-			return this.Value == other.Value && this.Type == other.Type;
-		}
-        
-		public override int GetHashCode()
-		{
-			unchecked
-		    {
-		        int hash = 17;
-		        
-		        hash = hash * 23 + this.Value.GetHashCode();
-		        hash = hash * 23 + this.Type.GetHashCode();
-		        
-		        return hash;
-		    }
-		}
-
     }
 }

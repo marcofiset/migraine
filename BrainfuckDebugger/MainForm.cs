@@ -93,7 +93,7 @@ namespace BrainfuckDebugger
         public void WriteToOutput(string value)
         {
             if (ProgramOutput != "")
-                ProgramOutput += Environment.NewLine;
+                ProgramOutput += " ";
 
             ProgramOutput += value;
         }
