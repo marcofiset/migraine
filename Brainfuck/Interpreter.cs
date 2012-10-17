@@ -7,11 +7,11 @@ namespace Brainfuck
 {
     public class Interpreter
     {
-        private string programString;
-        private int currentIndex;
-        private int pointerPosition;
-        private Stack<int> loopIndexes;
-        private List<int?> memory;
+        private String programString;
+        private Int32 currentIndex;
+        private Int32 pointerPosition;
+        private Stack<Int32> loopIndexes;
+        private List<Int32> memory;
 
         private IInputProvider input;
         private IOutputProvider output;
@@ -116,8 +116,8 @@ namespace Brainfuck
 
             programString = program;
             pointerPosition = 0;
-            loopIndexes = new Stack<int>();
-            memory = new List<int?>();
+            loopIndexes = new Stack<Int32>();
+            memory = new List<Int32>();
             memory.Add(0);
 
             for (currentIndex = 0; currentIndex < program.Length; currentIndex++)
