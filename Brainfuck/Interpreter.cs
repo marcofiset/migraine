@@ -7,14 +7,15 @@ namespace Brainfuck
 {
     public class Interpreter
     {
-        private String programString;
-        private Int32 currentIndex;
-        private Int32 pointerPosition;
+        private Int32 currentProgramStringIndex;
         private Stack<Int32> loopIndexes;
-        private List<Int32> memory;
 
-        private IInputProvider input;
-        private IOutputProvider output;
+        public String ProgramString { get; private set; }
+        public Int32 PointerPosition { get; private set; }
+        public List<Int32> MemoryCells { get; private set; }
+
+        private IInputProvider inputProvider;
+        private IOutputProvider outputDestination;
 
         private Dictionary<char, Action> actions;
 
@@ -38,56 +39,56 @@ namespace Brainfuck
             if (input == null) throw new ArgumentNullException("input");
             if (output == null) throw new ArgumentNullException("output");
 
-            this.input = input;
-            this.output = output;
+            this.inputProvider = input;
+            this.outputDestination = output;
 
             actions = new Dictionary<char, Action>();
 
             //Pointer manipulation
             actions.Add('>', () => 
             { 
-                pointerPosition++;
+                PointerPosition++;
 
                 //Allocate new memory cells as we go
-                if (memory.Count <= pointerPosition)
-                    memory.Add(0);
+                if (MemoryCells.Count <= PointerPosition)
+                    MemoryCells.Add(0);
             });
 
             actions.Add('<', () => 
             {
-                pointerPosition--;
+                PointerPosition--;
 
-                if (pointerPosition < 0)
-                    pointerPosition = 0;
+                if (PointerPosition < 0)
+                    PointerPosition = 0;
             });
 
             //Current cell manipulation
-            actions.Add('+', () => memory[pointerPosition]++);
-            actions.Add('-', () => memory[pointerPosition]--);
+            actions.Add('+', () => MemoryCells[PointerPosition]++);
+            actions.Add('-', () => MemoryCells[PointerPosition]--);
 
             //Input and output
-            actions.Add(',', () => memory[pointerPosition] = Convert.ToInt32(input.Get()));
-            actions.Add('.', () => output.Write(memory[pointerPosition].ToString()));
+            actions.Add(',', () => MemoryCells[PointerPosition] = Convert.ToInt32(input.Get()));
+            actions.Add('.', () => output.Write(MemoryCells[PointerPosition].ToString()));
 
             actions.Add('[', () =>
             {
-                loopIndexes.Push(currentIndex);
+                loopIndexes.Push(currentProgramStringIndex);
 
                 //Enter the loop if the current memory cell is different than zero
-                if (memory[pointerPosition] != 0)
+                if (MemoryCells[PointerPosition] != 0)
                     return;
 
                 //Else we skip until the end of that loop
                 do
                 {
-                    currentIndex++;
+                    currentProgramStringIndex++;
 
                     //Stack-based logic in case we encounter any inner loops
-                    if (programString[currentIndex] == '[')
+                    if (ProgramString[currentProgramStringIndex] == '[')
                     {
-                        loopIndexes.Push(currentIndex);
+                        loopIndexes.Push(currentProgramStringIndex);
                     }
-                    else if (programString[currentIndex] == ']')
+                    else if (ProgramString[currentProgramStringIndex] == ']')
                     {
                         loopIndexes.Pop();
                     }
@@ -98,8 +99,8 @@ namespace Brainfuck
             actions.Add(']', () =>
             {
                 //Go back to the start of the loop
-                if (memory[pointerPosition] != 0)
-                    currentIndex = loopIndexes.Peek();
+                if (MemoryCells[PointerPosition] != 0)
+                    currentProgramStringIndex = loopIndexes.Peek();
                 else
                     loopIndexes.Pop();
             });
@@ -114,15 +115,15 @@ namespace Brainfuck
             if (program == null) throw new ArgumentNullException("program");
             ValidateSourceFile(program);
 
-            programString = program;
-            pointerPosition = 0;
+            ProgramString = program;
+            PointerPosition = 0;
             loopIndexes = new Stack<Int32>();
-            memory = new List<Int32>();
-            memory.Add(0);
+            MemoryCells = new List<Int32>();
+            MemoryCells.Add(0);
 
-            for (currentIndex = 0; currentIndex < program.Length; currentIndex++)
+            for (currentProgramStringIndex = 0; currentProgramStringIndex < program.Length; currentProgramStringIndex++)
             {
-                char currentChar = programString[currentIndex];
+                char currentChar = ProgramString[currentProgramStringIndex];
                 actions[currentChar]();
             }
         }
