@@ -6,8 +6,7 @@
 
 Migraine is a Brainfuck interpreter, debugger and will eventually consist of a 
 complete programming language that compiles down to Brainfuck. I created this project for 
-learning purposes only. It is still a work in progress, and it is not very high on my priority list. 
-I plan to give it some more love in the near future.
+learning purposes only. It is still a work in progress.
 
 ## What currently works
 
