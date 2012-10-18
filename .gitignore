@@ -2,6 +2,7 @@
 *.user
 */bin
 */obj
+packages/
 Migraine.userprefs
 
 BrainfuckDebugger/gtk-gui/generated.cs

@@ -23,8 +23,8 @@ namespace Brainfuck
         /// Constructor with which you can supply a single input/output source
         /// </summary>
         /// <param name="inputOutput">The input/output provider</param>
-        public Interpreter(IInputOutputProvider inputOutput)
-            : this(inputOutput, inputOutput)
+        public Interpreter(IInputOutputProvider inputOutput, String program = "")
+            : this(inputOutput, inputOutput, program)
         {
 
         }
@@ -34,7 +34,7 @@ namespace Brainfuck
         /// </summary>
         /// <param name="input">The input provider</param>
         /// <param name="output">The output provider</param>
-        public Interpreter(IInputProvider input, IOutputProvider output) 
+        public Interpreter(IInputProvider input, IOutputProvider output, String program = "") 
         {
             if (input == null) throw new ArgumentNullException("input");
             if (output == null) throw new ArgumentNullException("output");
@@ -42,11 +42,24 @@ namespace Brainfuck
             this.inputProvider = input;
             this.outputDestination = output;
 
+            InitializeActionList(input, output);
+
+            ValidateSourceFile(program);
+
+            ProgramString = program;
+            PointerPosition = 0;
+            loopIndexes = new Stack<Int32>();
+            MemoryCells = new List<Int32>();
+            MemoryCells.Add(0);
+        }
+
+        private void InitializeActionList(IInputProvider input, IOutputProvider output)
+        {
             actions = new Dictionary<char, Action>();
 
             //Pointer manipulation
-            actions.Add('>', () => 
-            { 
+            actions.Add('>', () =>
+            {
                 PointerPosition++;
 
                 //Allocate new memory cells as we go
@@ -54,7 +67,7 @@ namespace Brainfuck
                     MemoryCells.Add(0);
             });
 
-            actions.Add('<', () => 
+            actions.Add('<', () =>
             {
                 PointerPosition--;
 
@@ -107,28 +120,6 @@ namespace Brainfuck
         }
 
         /// <summary>
-        /// Executes the given Brainfuck program
-        /// </summary>
-        /// <param name="program">A string containing the brainfuck program to execute</param>
-        public void Execute(string program)
-        {
-            if (program == null) throw new ArgumentNullException("program");
-            ValidateSourceFile(program);
-
-            ProgramString = program;
-            PointerPosition = 0;
-            loopIndexes = new Stack<Int32>();
-            MemoryCells = new List<Int32>();
-            MemoryCells.Add(0);
-
-            for (currentProgramStringIndex = 0; currentProgramStringIndex < program.Length; currentProgramStringIndex++)
-            {
-                char currentChar = ProgramString[currentProgramStringIndex];
-                actions[currentChar]();
-            }
-        }
-
-        /// <summary>
         /// Validates a given brainfuck source file to make sure it is a valid program
         /// </summary>
         /// <param name="program">A string containing the program to validate</param>
@@ -140,6 +131,22 @@ namespace Brainfuck
             {
                 if (!actions.ContainsKey(program[i]))
                     throw new Exception("Invalid character in source file");
+            }
+        }
+
+        /// <summary>
+        /// Executes the given Brainfuck program
+        /// </summary>
+        /// <param name="program">The program to execute (Optional, as it may have been supplied in the constructor)</param>
+        public void Execute(String program = "")
+        {
+            if (program != "")
+                ProgramString = program;
+
+            for (currentProgramStringIndex = 0; currentProgramStringIndex < ProgramString.Length; currentProgramStringIndex++)
+            {
+                char currentChar = ProgramString[currentProgramStringIndex];
+                actions[currentChar]();
             }
         }
     }

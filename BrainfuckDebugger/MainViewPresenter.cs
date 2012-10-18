@@ -42,8 +42,8 @@ namespace BrainfuckDebugger
         {
             view.ClearOutput();
 
-            var interpreter = new Brainfuck.Interpreter(this);
-            interpreter.Execute(view.BrainfuckProgram);
+            var interpreter = new Brainfuck.Interpreter(this, view.BrainfuckProgram);
+            interpreter.Execute();
         }
 
         /// <summary>
