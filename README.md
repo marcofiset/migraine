@@ -21,7 +21,7 @@ learning purposes only. It is still a work in progress.
 #### Brainfuck Interpreter and Debugger
 - Fully functional interpreter (uses ints instead of chars, I plan to make this configurable)
 
-## Next on the todo list
+## Next on the todo list (in no particular order)
 
 - Variable assignment
 - Boolean logic and operators
