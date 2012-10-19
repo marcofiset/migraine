@@ -14,6 +14,11 @@ namespace Brainfuck
         public Int32 PointerPosition { get; private set; }
         public List<Int32> MemoryCells { get; private set; }
 
+        public Int32 CurrentCellValue
+        {
+            get { return MemoryCells[PointerPosition]; }
+        }
+
         private IInputProvider inputProvider;
         private IOutputProvider outputDestination;
 
