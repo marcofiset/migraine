@@ -78,7 +78,7 @@ namespace Brainfuck.Tests
         [Test]
         public void TestNotEnterLoopWhen0()
         {
-            String program = "[->+++]>-";
+            String program = "[->+++<]>-";
             interpreter.Execute(program);
 
             Assert.AreEqual(-1, interpreter.CurrentCellValue);
