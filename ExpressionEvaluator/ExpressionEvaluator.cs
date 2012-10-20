@@ -49,15 +49,15 @@ namespace ExpressionEvaluator
 
             string operatorPattern = String.Format("[{0}]", Regex.Escape(operatorString));
 
-            RegexMatchEvaluator operatorMatcher = new RegexMatchEvaluator(operatorPattern);
-            RegexMatchEvaluator whiteSpaceMatcher = new RegexMatchEvaluator(@"[\s]+");
-            RegexMatchEvaluator numberMatcher = new RegexMatchEvaluator(@"(\d)+(\.[\d])*");
-            RegexMatchEvaluator identifierMatch = new RegexMatchEvaluator(@"[A-Za-z0-9_]+");
+            Regex operatorRegex = new Regex(operatorPattern);
+            Regex whiteSpaceRegex = new Regex(@"[\s]+");
+            Regex numberRegex = new Regex(@"(\d)+(\.[\d])*");
+            Regex identifierRegex = new Regex(@"[A-Za-z0-9_]+");
 
-            tokenDefinitions.Add(new TokenDefinition(operatorMatcher, TokenType.Operator));
-            tokenDefinitions.Add(new TokenDefinition(whiteSpaceMatcher, TokenType.Whitespace));
-            tokenDefinitions.Add(new TokenDefinition(numberMatcher, TokenType.Number));
-            tokenDefinitions.Add(new TokenDefinition(identifierMatch, TokenType.Identifier));
+            tokenDefinitions.Add(new TokenDefinition(operatorRegex, TokenType.Operator));
+            tokenDefinitions.Add(new TokenDefinition(whiteSpaceRegex, TokenType.Whitespace));
+            tokenDefinitions.Add(new TokenDefinition(numberRegex, TokenType.Number));
+            tokenDefinitions.Add(new TokenDefinition(identifierRegex, TokenType.Identifier));
         }
 
         public Double Evaluate(string expression)

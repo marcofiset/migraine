@@ -1,23 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ExpressionEvaluator
 {
     public class TokenDefinition
     {
         public TokenType Type { get; private set; }
-        private IMatchEvaluator matchEvaluator;
+        private Regex regex;
 
-        public TokenDefinition(IMatchEvaluator matchEvaluator, TokenType type)
+        public TokenDefinition(Regex regex, TokenType type)
         {
             this.Type = type;
-            this.matchEvaluator = matchEvaluator;
+            this.regex = regex;
         }
 
         public Match Match(string input)
         {
-            return this.matchEvaluator.Match(input);
+            return regex.Match(input);
         }
     }
 }
