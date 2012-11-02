@@ -108,5 +108,21 @@ namespace Brainfuck.Tests
             Assert.AreEqual(3, interpreter.MemoryCells[1]);
             Assert.AreEqual(-1, interpreter.MemoryCells[2]);
         }
+
+        [Test]
+        public void TestOutput()
+        {
+            string output = "";
+            var inputOutput = A.Fake<IInputOutputProvider>();
+            A.CallTo(() => inputOutput.Write(A<String>.Ignored))
+                .Invokes(call => output += call.Arguments[0]);
+
+            interpreter = new Interpreter(inputOutput);
+
+            string program = "++++.--.>+++++.";
+            interpreter.Execute(program);
+
+            Assert.AreEqual("425", output);
+        }
     }
 }
