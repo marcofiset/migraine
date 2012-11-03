@@ -15,6 +15,13 @@ namespace Migraine.Core
     /// Term       :== Factor ( ('*' | '/') Factor )?
     /// Factor     :== ('-')? Number
     /// 
+    /// What I would like to support in the future :
+    /// 
+    /// Expression :== Term ( ('+' | '-') Term)*
+    /// Term       :== Factor ( ('*' | '/') Factor )*
+    /// Factor     :== ('-')? ( Number | ParenExpression ) ('^' (Number | ParenExpression))?
+    /// ParenExpression :== '(' Expression ')'
+    /// 
     /// Number is defined by the Number token type provided by the Lexer
     /// 
     /// This is a grammar that I defined myself as I don't really like
@@ -69,7 +76,7 @@ namespace Migraine.Core
                 return new TermNode(leftFactor, op, rightFactor);
             }
 
-            throw new Exception("Operator * or / expected");
+            return new TermNode(leftFactor);
         }
 
         private FactorNode ParseFactor()
