@@ -38,15 +38,15 @@ namespace Migraine.Core
             tokenQueue = tokens;
         }
 
-        public ExpressionNode Parse()
+        public Node Parse()
         {
             return ParseExpressionNode();
         }
 
-        private ExpressionNode ParseExpressionNode()
+        private Node ParseExpressionNode()
         {
             var leftTerm = ParseTerm();
-            if (tokenQueue.Count == 0) return new ExpressionNode(leftTerm);
+            if (tokenQueue.Count == 0) return leftTerm;
 
             var currentToken = tokenQueue.Peek();
 
@@ -55,16 +55,16 @@ namespace Migraine.Core
                 var op = tokenQueue.Dequeue().Value;
                 var rightTerm = ParseTerm();
 
-                return new ExpressionNode(leftTerm, op, rightTerm);
+                return new OperationNode(leftTerm, op, rightTerm);
             }
 
             throw new Exception("Operator expected (+ or -)");
         }
 
-        private TermNode ParseTerm()
+        private Node ParseTerm()
         {
             var leftFactor = ParseFactor();
-            if (tokenQueue.Count == 0) return new TermNode(leftFactor);
+            if (tokenQueue.Count == 0) return leftFactor;
 
             var currentToken = tokenQueue.Peek();
 
@@ -73,13 +73,13 @@ namespace Migraine.Core
                 var op = tokenQueue.Dequeue().Value;
                 var rightFactor = ParseFactor();
 
-                return new TermNode(leftFactor, op, rightFactor);
+                return new OperationNode(leftFactor, op, rightFactor);
             }
 
-            return new TermNode(leftFactor);
+            return leftFactor;
         }
 
-        private FactorNode ParseFactor()
+        private Node ParseFactor()
         {
             var currentToken = tokenQueue.Peek();
             bool positive = true;
@@ -97,7 +97,7 @@ namespace Migraine.Core
                 Double termValue = Convert.ToDouble(currentToken.Value);
                 if (!positive) termValue *= -1;
 
-                return new FactorNode(termValue);
+                return new NumberNode(termValue);
             }
 
             throw new Exception("Number expected");

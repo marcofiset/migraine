@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Migraine.Core.Nodes
 {
-    public class FactorNode : Node
+    public class NumberNode : Node
     {
-        private Double value;
+        private double value;
 
-        public FactorNode(Double value)
+        public NumberNode(double value)
         {
             this.value = value;
         }

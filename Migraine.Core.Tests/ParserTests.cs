@@ -36,7 +36,7 @@ namespace Migraine.Core.Tests
             Assert.AreEqual(-32, expression.Evaluate());
         }
 
-        private ExpressionNode GetExpressionFromNumbersAndOperator(double n1, string op, double n2)
+        private Node GetExpressionFromNumbersAndOperator(double n1, string op, double n2)
         {
             var tokenQueue = new Queue<Token>();
 
