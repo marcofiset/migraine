@@ -11,8 +11,8 @@ namespace Migraine.Core
     /// This is the parser class.
     /// The following grammar is supported :
     /// 
-    /// Expression :== Term ( ('+' | '-') Term )?
-    /// Term       :== Factor ( ('*' | '/') Factor )?
+    /// Expression :== Term ( ('+' | '-') Term)*
+    /// Term       :== Factor ( ('*' | '/') Factor )*
     /// Factor     :== ('-')? Number
     /// 
     /// What I would like to support in the future :
