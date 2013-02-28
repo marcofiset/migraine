@@ -151,5 +151,42 @@ namespace Migraine.Core.Tests
 
             Assert.AreEqual(2, expression.Evaluate());
         }
+
+        [Test]
+        public void TestVeryComplexExpression()
+        {
+            var tokenQueue = new Queue<Token>();
+
+            tokenQueue.Enqueue(new Token("2", TokenType.Number));
+            tokenQueue.Enqueue(new Token("*", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("8", TokenType.Number));
+            tokenQueue.Enqueue(new Token("+", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("21", TokenType.Number));
+            tokenQueue.Enqueue(new Token("/", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("7", TokenType.Number));
+            tokenQueue.Enqueue(new Token("*", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("4", TokenType.Number));
+            tokenQueue.Enqueue(new Token("-", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("15", TokenType.Number));
+            tokenQueue.Enqueue(new Token("+", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("6", TokenType.Number));
+            tokenQueue.Enqueue(new Token("+", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("3", TokenType.Number));
+            tokenQueue.Enqueue(new Token("*", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("8", TokenType.Number));
+            tokenQueue.Enqueue(new Token("/", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("4", TokenType.Number));
+            tokenQueue.Enqueue(new Token("/", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("2", TokenType.Number));
+            tokenQueue.Enqueue(new Token("-", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("1", TokenType.Number));
+            tokenQueue.Enqueue(new Token("+", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("4", TokenType.Number));
+
+            var parser = new Parser(tokenQueue);
+            var expression = parser.Parse();
+
+            Assert.AreEqual(25, expression.Evaluate());
+        }
     }
 }
