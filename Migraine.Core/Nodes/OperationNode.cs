@@ -8,9 +8,8 @@ namespace Migraine.Core.Nodes
 {
     public class OperationNode : Node
     {
-        private string op;
         private Node leftNode;
-        private Node rightNode;
+        private List<Tuple<string, Node>> restOfExpression;
 
         public OperationNode(Node leftNode, string op, Node rightNode)
         {
@@ -18,35 +17,57 @@ namespace Migraine.Core.Nodes
             if (rightNode == null) throw new ArgumentNullException("rightNode");
             if (!"+-*/".Contains(op)) throw new ArgumentOutOfRangeException("Unsupported operator : " + op);
 
-            this.op = op;
             this.leftNode = leftNode;
-            this.rightNode = rightNode;
+
+            this.restOfExpression = new List<Tuple<string, Node>>();
+            restOfExpression.Add(Tuple.Create(op, rightNode));
+        }
+
+        public OperationNode(Node leftNode, IEnumerable<Tuple<string, Node>> restOfExpression)
+        {
+            if (leftNode == null) throw new ArgumentNullException("leftNode");
+            if (restOfExpression == null) throw new ArgumentNullException("restOfExpression");
+
+            this.leftNode = leftNode;
+            this.restOfExpression = restOfExpression as List<Tuple<string, Node>>;
         }
 
         public override double Evaluate()
         {
             double left = leftNode.Evaluate();
-            double right = rightNode.Evaluate();
+            double result = left;
 
-            //There won't be any other operator here so this unflexible
-            //approach is fine. I decided to keep it simple
-            switch (op)
+            foreach (var pair in restOfExpression)
             {
-                case "+":
-                    return left + right;
+                var op = pair.Item1;
+                var right = pair.Item2;
 
-                case "-":
-                    return left - right;
+                //There won't be any other operator here so this unflexible
+                //approach is fine. I decided to keep it simple
+                switch (op)
+                {
+                    case "+":
+                        result += right.Evaluate();
+                        break;
 
-                case "*":
-                    return left * right;
+                    case "-":
+                        result -= right.Evaluate();
+                        break;
 
-                case "/":
-                    return left / right;
+                    case "*":
+                        result *= right.Evaluate();
+                        break;
 
-                default:
-                    throw new Exception("Unsupported operator : " + op);
+                    case "/":
+                        result /= right.Evaluate();
+                        break;
+
+                    default:
+                        throw new Exception("Unsupported operator : " + op);
+                }
             }
+
+            return result;
         }
     }
 }

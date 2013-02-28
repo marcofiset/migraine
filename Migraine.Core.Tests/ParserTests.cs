@@ -81,5 +81,75 @@ namespace Migraine.Core.Tests
 
             Assert.AreEqual(8, expression.Evaluate());
         }
+
+        [Test]
+        public void TestMultipleAddition()
+        {
+            var tokenQueue = new Queue<Token>();
+
+            tokenQueue.Enqueue(new Token("15", TokenType.Number));
+            tokenQueue.Enqueue(new Token("+", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("20", TokenType.Number));
+            tokenQueue.Enqueue(new Token("+", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("5", TokenType.Number));
+
+            var parser = new Parser(tokenQueue);
+            var expression = parser.Parse();
+
+            Assert.AreEqual(40, expression.Evaluate());
+        }
+
+        [Test]
+        public void TestOperatorPrecedence()
+        {
+            var tokenQueue = new Queue<Token>();
+
+            tokenQueue.Enqueue(new Token("15", TokenType.Number));
+            tokenQueue.Enqueue(new Token("-", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("20", TokenType.Number));
+            tokenQueue.Enqueue(new Token("/", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("5", TokenType.Number));
+            tokenQueue.Enqueue(new Token("+", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("10", TokenType.Number));
+
+            var parser = new Parser(tokenQueue);
+            var expression = parser.Parse();
+
+            Assert.AreEqual(21, expression.Evaluate());
+        }
+
+        [Test]
+        public void TestMultipleMultiplication()
+        {
+            var tokenQueue = new Queue<Token>();
+
+            tokenQueue.Enqueue(new Token("5", TokenType.Number));
+            tokenQueue.Enqueue(new Token("*", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("2", TokenType.Number));
+            tokenQueue.Enqueue(new Token("*", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("8", TokenType.Number));
+
+            var parser = new Parser(tokenQueue);
+            var expression = parser.Parse();
+
+            Assert.AreEqual(80, expression.Evaluate());
+        }
+
+        [Test]
+        public void TestMultipleDivision()
+        {
+            var tokenQueue = new Queue<Token>();
+
+            tokenQueue.Enqueue(new Token("80", TokenType.Number));
+            tokenQueue.Enqueue(new Token("/", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("20", TokenType.Number));
+            tokenQueue.Enqueue(new Token("/", TokenType.Operator));
+            tokenQueue.Enqueue(new Token("2", TokenType.Number));
+
+            var parser = new Parser(tokenQueue);
+            var expression = parser.Parse();
+
+            Assert.AreEqual(2, expression.Evaluate());
+        }
     }
 }

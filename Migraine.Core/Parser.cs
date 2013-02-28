@@ -40,25 +40,34 @@ namespace Migraine.Core
 
         public Node Parse()
         {
-            return ParseExpressionNode();
+            return ParseExpression();
         }
 
-        private Node ParseExpressionNode()
+        private Node ParseExpression()
         {
             var leftTerm = ParseTerm();
             if (tokenQueue.Count == 0) return leftTerm;
 
+            var restOfExpression = new List<Tuple<string, Node>>();
+
             var currentToken = tokenQueue.Peek();
 
-            if (currentToken.Value == "+" || currentToken.Value == "-")
+            while (currentToken.Value == "+" || currentToken.Value == "-")
             {
                 var op = tokenQueue.Dequeue().Value;
                 var rightTerm = ParseTerm();
 
-                return new OperationNode(leftTerm, op, rightTerm);
+                restOfExpression.Add(Tuple.Create(op, rightTerm));
+
+                if (tokenQueue.Count == 0) break;
+
+                currentToken = tokenQueue.Peek();
             }
 
-            throw new Exception("Operator expected (+ or -)");
+            if (restOfExpression.Count == 0)
+                throw new Exception("Operator expected (+ or -)");
+
+            return new OperationNode(leftTerm, restOfExpression);
         }
 
         private Node ParseTerm()
@@ -66,17 +75,23 @@ namespace Migraine.Core
             var leftFactor = ParseFactor();
             if (tokenQueue.Count == 0) return leftFactor;
 
+            var restOfExpression = new List<Tuple<string, Node>>();
+
             var currentToken = tokenQueue.Peek();
 
-            if (currentToken.Value == "*" || currentToken.Value == "/")
+            while (currentToken.Value == "*" || currentToken.Value == "/")
             {
                 var op = tokenQueue.Dequeue().Value;
                 var rightFactor = ParseFactor();
 
-                return new OperationNode(leftFactor, op, rightFactor);
+                restOfExpression.Add(Tuple.Create(op, rightFactor));
+
+                if (tokenQueue.Count == 0) break;
+
+                currentToken = tokenQueue.Peek();
             }
 
-            return leftFactor;
+            return new OperationNode(leftFactor, restOfExpression); ;
         }
 
         private Node ParseFactor()
