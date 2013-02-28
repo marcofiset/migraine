@@ -110,7 +110,7 @@ namespace Brainfuck
                     {
                         loopIndexes.Pop();
                     }
-
+                //FIXME: Potential bug here if we are already in a loop
                 } while (loopIndexes.Count > 0);
             });
 
