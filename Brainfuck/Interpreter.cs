@@ -137,6 +137,8 @@ namespace Brainfuck
                 if (!actions.ContainsKey(program[i]))
                     throw new Exception("Invalid character in source file");
             }
+            
+            //TODO: Make sure that every loop has a closing bracket
         }
 
         /// <summary>
