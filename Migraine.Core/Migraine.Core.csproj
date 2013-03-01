@@ -39,10 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Lexer.cs" />
+    <Compile Include="GenericLexer.cs" />
+    <Compile Include="MigraineLexer.cs" />
     <Compile Include="Nodes\Node.cs" />
     <Compile Include="Nodes\NumberNode.cs" />
     <Compile Include="Nodes\OperationNode.cs" />
+    <Compile Include="Nodes\UnaryMinusNode.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token.cs" />

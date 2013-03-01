@@ -13,19 +13,16 @@ namespace Migraine.Core
     /// 
     /// Expression :== Term ( ('+' | '-') Term)*
     /// Term       :== Factor ( ('*' | '/') Factor )*
-    /// Factor     :== ('-')? Number
+    /// Factor     :== ('-')? ( Number | ParenExpression )
+    /// ParenExpression :== '(' Expression ')'
     /// 
     /// What I would like to support in the future :
     /// 
     /// Expression :== Term ( ('+' | '-') Term)*
     /// Term       :== Factor ( ('*' | '/') Factor )*
     /// Factor     :== ('-')? ( Number | ParenExpression ) ('^' (Number | ParenExpression))?
-    /// ParenExpression :== '(' Expression ')'
     /// 
     /// Number is defined by the Number token type provided by the Lexer
-    /// 
-    /// This is a grammar that I defined myself as I don't really like
-    /// standard grammar specifications. I think this one is easier to follow.
     /// 
     /// It currently does not support exponent operator
     /// </summary>
@@ -65,7 +62,7 @@ namespace Migraine.Core
             }
 
             if (restOfExpression.Count == 0)
-                throw new Exception("Operator expected (+ or -)");
+                return leftTerm;
 
             return new OperationNode(leftTerm, restOfExpression);
         }
@@ -91,6 +88,9 @@ namespace Migraine.Core
                 currentToken = tokenQueue.Peek();
             }
 
+            if (restOfExpression.Count == 0)
+                return leftFactor;
+
             return new OperationNode(leftFactor, restOfExpression); ;
         }
 
@@ -106,16 +106,38 @@ namespace Migraine.Core
                 currentToken = tokenQueue.Peek();
             }
 
+            Node factor = null;
+
             if (currentToken.Type == TokenType.Number)
             {
                 tokenQueue.Dequeue();
                 Double termValue = Convert.ToDouble(currentToken.Value);
-                if (!positive) termValue *= -1;
 
-                return new NumberNode(termValue);
+                factor = new NumberNode(termValue);
+            }
+            else if (currentToken.Value == "(")
+            {
+                tokenQueue.Dequeue();
+                factor = ParseExpression();
+
+                if (tokenQueue.Count == 0)
+                    throw new Exception(") expected");
+
+                currentToken = tokenQueue.Peek();
+                
+                if (currentToken.Value == ")")
+                    tokenQueue.Dequeue();
+                else
+                    throw new Exception(") expected");
             }
 
-            throw new Exception("Number expected");
+            if (factor == null)
+                throw new Exception("Number or () expression expected");
+
+            if (!positive)
+                return new UnaryMinusNode(factor);
+
+            return factor;
         }
     }
 }

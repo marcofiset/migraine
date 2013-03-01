@@ -188,5 +188,32 @@ namespace Migraine.Core.Tests
 
             Assert.AreEqual(25, expression.Evaluate());
         }
+
+        [Test]
+        public void TestSimpleParenthesisExpression()
+        {
+            var tokenQueue = new MigraineLexer().Tokenize("(3)");
+            var expression = new Parser(tokenQueue).Parse();
+
+            Assert.AreEqual(3, expression.Evaluate());
+        }
+
+        [Test]
+        public void TestParenthesisPrecedence()
+        {
+            var tokens = new MigraineLexer().Tokenize("(3 + 4) * 2");
+            var expression = new Parser(tokens).Parse();
+
+            Assert.AreEqual(14, expression.Evaluate());
+        }
+
+        [Test]
+        public void TestUnaryMinus()
+        {
+            var tokens = new MigraineLexer().Tokenize("-(-3 + 5 * -(14 - -7)) / -2");
+            var expression = new Parser(tokens).Parse();
+
+            Assert.AreEqual(-54, expression.Evaluate());
+        }
     }
 }
