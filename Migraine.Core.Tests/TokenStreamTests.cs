@@ -11,59 +11,80 @@ namespace Migraine.Core.Tests
     public class TokenStreamTests
     {
         private TokenStream _tokenStream;
+        private Token _token;
 
         [SetUp]
         public void SetUp()
         {
             _tokenStream = new TokenStream();
-        }
-
-        [Test]
-        public void CanAddTokenToStream()
-        {
-            _tokenStream.Add(new Token("5", TokenType.Number));
+            _token = new Token("5", TokenType.Number);
+            _tokenStream.Add(_token);
         }
 
         [Test]
         public void StreamCountRaiseWhenAdd()
         {
-            Assert.AreEqual(0, _tokenStream.Count);
-            _tokenStream.Add(new Token("5", TokenType.Number));
             Assert.AreEqual(1, _tokenStream.Count);
+            _tokenStream.Add(_token);
+            Assert.AreEqual(2, _tokenStream.Count);
         }
 
         [Test]
         public void StreamCanConsumeAnyToken()
         {
-            _tokenStream.Add(new Token("5", TokenType.Number));
-            Assert.That(_tokenStream.Consume());
+            _tokenStream.Consume();
         }
 
         [Test]
         public void StreamCanConsumeTokenByValue()
         {
-            _tokenStream.Add(new Token("5", TokenType.Number));
-            Assert.That(_tokenStream.Consume("5"));
+            _tokenStream.Consume("5");
         }
 
         [Test]
         public void StreamCanConsumeTokenByType()
         {
-            _tokenStream.Add(new Token("5", TokenType.Number));
-            Assert.That(_tokenStream.Consume(TokenType.Number));
+            _tokenStream.Consume(TokenType.Number);
+        }
+
+        [Test]
+        public void CanAccessCurrentToken()
+        {
+            Assert.AreEqual(_token, _tokenStream.CurrentToken);
+        }
+
+        [Test]
+        public void CurrentTokenIsNullIfStreamEmpty()
+        {
+            _tokenStream.Consume();
+            Assert.IsNull(_tokenStream.CurrentToken);
         }
 
         [Test]
         public void ConsumeShouldReduceCountByOne()
         {
-            _tokenStream.Add(new Token("5", TokenType.Number));
             _tokenStream.Consume();
             Assert.AreEqual(0, _tokenStream.Count);
         }
 
         [Test]
+        public void ConsumeWrongTypeThrowsExpectedTokenException()
+        {
+            var previousCount = _tokenStream.Count;
+            Assert.Throws(typeof(ExpectedTokenException), () => _tokenStream.Consume(TokenType.Operator));
+        }
+
+        [Test]
+        public void ConsumeWrongValueThrowsExpectedTokenException()
+        {
+            var previousCount = _tokenStream.Count;
+            Assert.Throws(typeof(ExpectedTokenException), () => _tokenStream.Consume("+"));
+        }
+
+        [Test]
         public void ConsumeOnEmptyStreamThrowsException()
         {
+            _tokenStream.Consume();
             Assert.Throws(typeof(TokenStreamEmptyException), () => _tokenStream.Consume());
         }
     }
