@@ -30,15 +30,15 @@ namespace Migraine.Core
             _lexer = new GenericLexer(tokenDefinitions);
         }
 
-        public Queue<Token> Tokenize(String input)
+        public TokenStream Tokenize(String input)
         {
-            var queue = new Queue<Token>();
+            var stream = new TokenStream();
 
             var tokens = _lexer.Tokenize(input) as List<Token>;
             tokens.Where(t => t.Type != TokenType.Whitespace).ToList()
-                .ForEach(t => queue.Enqueue(t));
+                .ForEach(t => stream.Add(t));
 
-            return queue;
+            return stream;
         }
     }
 }

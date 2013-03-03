@@ -11,13 +11,20 @@ namespace Migraine.Core.Tests
     [TestFixture]
     public class ParserTests
     {
+        private TokenStream _tokenStream;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _tokenStream = new TokenStream();
+        }
+
         [Test]
         public void TestNumber()
         {
-            var tokenQueue = new Queue<Token>();
-            tokenQueue.Enqueue(new Token("32", TokenType.Number));
+            _tokenStream.Add(new Token("32", TokenType.Number));
 
-            var parser = new Parser(tokenQueue);
+            var parser = new Parser(_tokenStream);
             var expression = parser.Parse();
 
             Assert.AreEqual(32, expression.Evaluate());
@@ -26,11 +33,10 @@ namespace Migraine.Core.Tests
         [Test]
         public void TestNegativeNumber()
         {
-            var tokenQueue = new Queue<Token>();
-            tokenQueue.Enqueue(new Token("-", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("32", TokenType.Number));
+            _tokenStream.Add(new Token("-", TokenType.Operator));
+            _tokenStream.Add(new Token("32", TokenType.Number));
 
-            var parser = new Parser(tokenQueue);
+            var parser = new Parser(_tokenStream);
             var expression = parser.Parse();
 
             Assert.AreEqual(-32, expression.Evaluate());
@@ -38,13 +44,11 @@ namespace Migraine.Core.Tests
 
         private Node GetExpressionFromNumbersAndOperator(double n1, string op, double n2)
         {
-            var tokenQueue = new Queue<Token>();
+            _tokenStream.Add(new Token(n1.ToString(), TokenType.Number));
+            _tokenStream.Add(new Token(op, TokenType.Operator));
+            _tokenStream.Add(new Token(n2.ToString(), TokenType.Number));
 
-            tokenQueue.Enqueue(new Token(n1.ToString(), TokenType.Number));
-            tokenQueue.Enqueue(new Token(op, TokenType.Operator));
-            tokenQueue.Enqueue(new Token(n2.ToString(), TokenType.Number));
-
-            var parser = new Parser(tokenQueue);
+            var parser = new Parser(_tokenStream);
 
             return parser.Parse();
         }
@@ -85,15 +89,13 @@ namespace Migraine.Core.Tests
         [Test]
         public void TestMultipleAddition()
         {
-            var tokenQueue = new Queue<Token>();
+            _tokenStream.Add(new Token("15", TokenType.Number));
+            _tokenStream.Add(new Token("+", TokenType.Operator));
+            _tokenStream.Add(new Token("20", TokenType.Number));
+            _tokenStream.Add(new Token("+", TokenType.Operator));
+            _tokenStream.Add(new Token("5", TokenType.Number));
 
-            tokenQueue.Enqueue(new Token("15", TokenType.Number));
-            tokenQueue.Enqueue(new Token("+", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("20", TokenType.Number));
-            tokenQueue.Enqueue(new Token("+", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("5", TokenType.Number));
-
-            var parser = new Parser(tokenQueue);
+            var parser = new Parser(_tokenStream);
             var expression = parser.Parse();
 
             Assert.AreEqual(40, expression.Evaluate());
@@ -102,17 +104,15 @@ namespace Migraine.Core.Tests
         [Test]
         public void TestOperatorPrecedence()
         {
-            var tokenQueue = new Queue<Token>();
+            _tokenStream.Add(new Token("15", TokenType.Number));
+            _tokenStream.Add(new Token("-", TokenType.Operator));
+            _tokenStream.Add(new Token("20", TokenType.Number));
+            _tokenStream.Add(new Token("/", TokenType.Operator));
+            _tokenStream.Add(new Token("5", TokenType.Number));
+            _tokenStream.Add(new Token("+", TokenType.Operator));
+            _tokenStream.Add(new Token("10", TokenType.Number));
 
-            tokenQueue.Enqueue(new Token("15", TokenType.Number));
-            tokenQueue.Enqueue(new Token("-", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("20", TokenType.Number));
-            tokenQueue.Enqueue(new Token("/", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("5", TokenType.Number));
-            tokenQueue.Enqueue(new Token("+", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("10", TokenType.Number));
-
-            var parser = new Parser(tokenQueue);
+            var parser = new Parser(_tokenStream);
             var expression = parser.Parse();
 
             Assert.AreEqual(21, expression.Evaluate());
@@ -121,15 +121,13 @@ namespace Migraine.Core.Tests
         [Test]
         public void TestMultipleMultiplication()
         {
-            var tokenQueue = new Queue<Token>();
+            _tokenStream.Add(new Token("5", TokenType.Number));
+            _tokenStream.Add(new Token("*", TokenType.Operator));
+            _tokenStream.Add(new Token("2", TokenType.Number));
+            _tokenStream.Add(new Token("*", TokenType.Operator));
+            _tokenStream.Add(new Token("8", TokenType.Number));
 
-            tokenQueue.Enqueue(new Token("5", TokenType.Number));
-            tokenQueue.Enqueue(new Token("*", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("2", TokenType.Number));
-            tokenQueue.Enqueue(new Token("*", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("8", TokenType.Number));
-
-            var parser = new Parser(tokenQueue);
+            var parser = new Parser(_tokenStream);
             var expression = parser.Parse();
 
             Assert.AreEqual(80, expression.Evaluate());
@@ -138,15 +136,13 @@ namespace Migraine.Core.Tests
         [Test]
         public void TestMultipleDivision()
         {
-            var tokenQueue = new Queue<Token>();
+            _tokenStream.Add(new Token("80", TokenType.Number));
+            _tokenStream.Add(new Token("/", TokenType.Operator));
+            _tokenStream.Add(new Token("20", TokenType.Number));
+            _tokenStream.Add(new Token("/", TokenType.Operator));
+            _tokenStream.Add(new Token("2", TokenType.Number));
 
-            tokenQueue.Enqueue(new Token("80", TokenType.Number));
-            tokenQueue.Enqueue(new Token("/", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("20", TokenType.Number));
-            tokenQueue.Enqueue(new Token("/", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("2", TokenType.Number));
-
-            var parser = new Parser(tokenQueue);
+            var parser = new Parser(_tokenStream);
             var expression = parser.Parse();
 
             Assert.AreEqual(2, expression.Evaluate());
@@ -155,35 +151,33 @@ namespace Migraine.Core.Tests
         [Test]
         public void TestVeryComplexExpression()
         {
-            var tokenQueue = new Queue<Token>();
+            _tokenStream.Add(new Token("2", TokenType.Number));
+            _tokenStream.Add(new Token("*", TokenType.Operator));
+            _tokenStream.Add(new Token("8", TokenType.Number));
+            _tokenStream.Add(new Token("+", TokenType.Operator));
+            _tokenStream.Add(new Token("21", TokenType.Number));
+            _tokenStream.Add(new Token("/", TokenType.Operator));
+            _tokenStream.Add(new Token("7", TokenType.Number));
+            _tokenStream.Add(new Token("*", TokenType.Operator));
+            _tokenStream.Add(new Token("4", TokenType.Number));
+            _tokenStream.Add(new Token("-", TokenType.Operator));
+            _tokenStream.Add(new Token("15", TokenType.Number));
+            _tokenStream.Add(new Token("+", TokenType.Operator));
+            _tokenStream.Add(new Token("6", TokenType.Number));
+            _tokenStream.Add(new Token("+", TokenType.Operator));
+            _tokenStream.Add(new Token("3", TokenType.Number));
+            _tokenStream.Add(new Token("*", TokenType.Operator));
+            _tokenStream.Add(new Token("8", TokenType.Number));
+            _tokenStream.Add(new Token("/", TokenType.Operator));
+            _tokenStream.Add(new Token("4", TokenType.Number));
+            _tokenStream.Add(new Token("/", TokenType.Operator));
+            _tokenStream.Add(new Token("2", TokenType.Number));
+            _tokenStream.Add(new Token("-", TokenType.Operator));
+            _tokenStream.Add(new Token("1", TokenType.Number));
+            _tokenStream.Add(new Token("+", TokenType.Operator));
+            _tokenStream.Add(new Token("4", TokenType.Number));
 
-            tokenQueue.Enqueue(new Token("2", TokenType.Number));
-            tokenQueue.Enqueue(new Token("*", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("8", TokenType.Number));
-            tokenQueue.Enqueue(new Token("+", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("21", TokenType.Number));
-            tokenQueue.Enqueue(new Token("/", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("7", TokenType.Number));
-            tokenQueue.Enqueue(new Token("*", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("4", TokenType.Number));
-            tokenQueue.Enqueue(new Token("-", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("15", TokenType.Number));
-            tokenQueue.Enqueue(new Token("+", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("6", TokenType.Number));
-            tokenQueue.Enqueue(new Token("+", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("3", TokenType.Number));
-            tokenQueue.Enqueue(new Token("*", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("8", TokenType.Number));
-            tokenQueue.Enqueue(new Token("/", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("4", TokenType.Number));
-            tokenQueue.Enqueue(new Token("/", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("2", TokenType.Number));
-            tokenQueue.Enqueue(new Token("-", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("1", TokenType.Number));
-            tokenQueue.Enqueue(new Token("+", TokenType.Operator));
-            tokenQueue.Enqueue(new Token("4", TokenType.Number));
-
-            var parser = new Parser(tokenQueue);
+            var parser = new Parser(_tokenStream);
             var expression = parser.Parse();
 
             Assert.AreEqual(25, expression.Evaluate());
@@ -192,8 +186,8 @@ namespace Migraine.Core.Tests
         [Test]
         public void TestSimpleParenthesisExpression()
         {
-            var tokenQueue = new MigraineLexer().Tokenize("(3)");
-            var expression = new Parser(tokenQueue).Parse();
+            var _tokenStream = new MigraineLexer().Tokenize("(3)");
+            var expression = new Parser(_tokenStream).Parse();
 
             Assert.AreEqual(3, expression.Evaluate());
         }
