@@ -21,28 +21,6 @@ namespace Migraine.Core.Tests
             _lexer = new MigraineLexer();
         }
 
-        [Test]
-        public void TestNumber()
-        {
-            _tokenStream = _lexer.Tokenize("32");
-
-            var parser = new Parser(_tokenStream);
-            var expression = parser.Parse();
-
-            Assert.AreEqual(32, expression.Evaluate());
-        }
-
-        [Test]
-        public void TestNegativeNumber()
-        {
-            _tokenStream = _lexer.Tokenize("-32");
-
-            var parser = new Parser(_tokenStream);
-            var expression = parser.Parse();
-
-            Assert.AreEqual(-32, expression.Evaluate());
-        }
-
         private Double EvaluateExpression(String expression)
         {
             _tokenStream = _lexer.Tokenize(expression);
