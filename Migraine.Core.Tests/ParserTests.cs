@@ -12,17 +12,19 @@ namespace Migraine.Core.Tests
     public class ParserTests
     {
         private TokenStream _tokenStream;
+        private MigraineLexer _lexer;
 
         [SetUp]
         public void SetUp()
         {
             _tokenStream = new TokenStream();
+            _lexer = new MigraineLexer();
         }
 
         [Test]
         public void TestNumber()
         {
-            _tokenStream.Add(new Token("32", TokenType.Number));
+            _tokenStream = _lexer.Tokenize("32");
 
             var parser = new Parser(_tokenStream);
             var expression = parser.Parse();
@@ -33,8 +35,7 @@ namespace Migraine.Core.Tests
         [Test]
         public void TestNegativeNumber()
         {
-            _tokenStream.Add(new Token("-", TokenType.Operator));
-            _tokenStream.Add(new Token("32", TokenType.Number));
+            _tokenStream = _lexer.Tokenize("-32");
 
             var parser = new Parser(_tokenStream);
             var expression = parser.Parse();
@@ -42,172 +43,84 @@ namespace Migraine.Core.Tests
             Assert.AreEqual(-32, expression.Evaluate());
         }
 
-        private Node GetExpressionFromNumbersAndOperator(double n1, string op, double n2)
+        private Double EvaluateExpression(String expression)
         {
-            _tokenStream.Add(new Token(n1.ToString(), TokenType.Number));
-            _tokenStream.Add(new Token(op, TokenType.Operator));
-            _tokenStream.Add(new Token(n2.ToString(), TokenType.Number));
-
+            _tokenStream = _lexer.Tokenize(expression);
             var parser = new Parser(_tokenStream);
 
-            return parser.Parse();
+            return parser.Parse().Evaluate();
         }
-
 
         [Test]
         public void TestAddition()
         {
-            var expression = GetExpressionFromNumbersAndOperator(32, "+", 40);
-
-            Assert.AreEqual(72, expression.Evaluate());
+            Assert.AreEqual(72, EvaluateExpression("32 + 40"));
         }
 
         [Test]
         public void TestSubstraction()
         {
-            var expression = GetExpressionFromNumbersAndOperator(42, "-", 30);
-
-            Assert.AreEqual(12, expression.Evaluate());
+            Assert.AreEqual(12, EvaluateExpression("42 - 30"));
         }
 
         [Test]
         public void TestMultiplication()
         {
-            var expression = GetExpressionFromNumbersAndOperator(8, "*", 7);
-
-            Assert.AreEqual(56, expression.Evaluate());
+            Assert.AreEqual(56, EvaluateExpression("8 * 7"));
         }
 
         [Test]
         public void TestDivision()
         {
-            var expression = GetExpressionFromNumbersAndOperator(56, "/", 7);
-
-            Assert.AreEqual(8, expression.Evaluate());
+            Assert.AreEqual(8, EvaluateExpression("56 / 7"));
         }
 
         [Test]
         public void TestMultipleAddition()
         {
-            _tokenStream.Add(new Token("15", TokenType.Number));
-            _tokenStream.Add(new Token("+", TokenType.Operator));
-            _tokenStream.Add(new Token("20", TokenType.Number));
-            _tokenStream.Add(new Token("+", TokenType.Operator));
-            _tokenStream.Add(new Token("5", TokenType.Number));
-
-            var parser = new Parser(_tokenStream);
-            var expression = parser.Parse();
-
-            Assert.AreEqual(40, expression.Evaluate());
+            Assert.AreEqual(40, EvaluateExpression("15 + 20 + 5"));
         }
 
         [Test]
         public void TestOperatorPrecedence()
         {
-            _tokenStream.Add(new Token("15", TokenType.Number));
-            _tokenStream.Add(new Token("-", TokenType.Operator));
-            _tokenStream.Add(new Token("20", TokenType.Number));
-            _tokenStream.Add(new Token("/", TokenType.Operator));
-            _tokenStream.Add(new Token("5", TokenType.Number));
-            _tokenStream.Add(new Token("+", TokenType.Operator));
-            _tokenStream.Add(new Token("10", TokenType.Number));
-
-            var parser = new Parser(_tokenStream);
-            var expression = parser.Parse();
-
-            Assert.AreEqual(21, expression.Evaluate());
+            Assert.AreEqual(21, EvaluateExpression("15 - 20 / 5 + 10"));
         }
 
         [Test]
         public void TestMultipleMultiplication()
         {
-            _tokenStream.Add(new Token("5", TokenType.Number));
-            _tokenStream.Add(new Token("*", TokenType.Operator));
-            _tokenStream.Add(new Token("2", TokenType.Number));
-            _tokenStream.Add(new Token("*", TokenType.Operator));
-            _tokenStream.Add(new Token("8", TokenType.Number));
-
-            var parser = new Parser(_tokenStream);
-            var expression = parser.Parse();
-
-            Assert.AreEqual(80, expression.Evaluate());
+            Assert.AreEqual(80, EvaluateExpression("5 * 2 * 8"));
         }
 
         [Test]
         public void TestMultipleDivision()
         {
-            _tokenStream.Add(new Token("80", TokenType.Number));
-            _tokenStream.Add(new Token("/", TokenType.Operator));
-            _tokenStream.Add(new Token("20", TokenType.Number));
-            _tokenStream.Add(new Token("/", TokenType.Operator));
-            _tokenStream.Add(new Token("2", TokenType.Number));
-
-            var parser = new Parser(_tokenStream);
-            var expression = parser.Parse();
-
-            Assert.AreEqual(2, expression.Evaluate());
+            Assert.AreEqual(2, EvaluateExpression("80 / 20 / 2"));
         }
 
         [Test]
         public void TestVeryComplexExpression()
         {
-            _tokenStream.Add(new Token("2", TokenType.Number));
-            _tokenStream.Add(new Token("*", TokenType.Operator));
-            _tokenStream.Add(new Token("8", TokenType.Number));
-            _tokenStream.Add(new Token("+", TokenType.Operator));
-            _tokenStream.Add(new Token("21", TokenType.Number));
-            _tokenStream.Add(new Token("/", TokenType.Operator));
-            _tokenStream.Add(new Token("7", TokenType.Number));
-            _tokenStream.Add(new Token("*", TokenType.Operator));
-            _tokenStream.Add(new Token("4", TokenType.Number));
-            _tokenStream.Add(new Token("-", TokenType.Operator));
-            _tokenStream.Add(new Token("15", TokenType.Number));
-            _tokenStream.Add(new Token("+", TokenType.Operator));
-            _tokenStream.Add(new Token("6", TokenType.Number));
-            _tokenStream.Add(new Token("+", TokenType.Operator));
-            _tokenStream.Add(new Token("3", TokenType.Number));
-            _tokenStream.Add(new Token("*", TokenType.Operator));
-            _tokenStream.Add(new Token("8", TokenType.Number));
-            _tokenStream.Add(new Token("/", TokenType.Operator));
-            _tokenStream.Add(new Token("4", TokenType.Number));
-            _tokenStream.Add(new Token("/", TokenType.Operator));
-            _tokenStream.Add(new Token("2", TokenType.Number));
-            _tokenStream.Add(new Token("-", TokenType.Operator));
-            _tokenStream.Add(new Token("1", TokenType.Number));
-            _tokenStream.Add(new Token("+", TokenType.Operator));
-            _tokenStream.Add(new Token("4", TokenType.Number));
-
-            var parser = new Parser(_tokenStream);
-            var expression = parser.Parse();
-
-            Assert.AreEqual(25, expression.Evaluate());
+            Assert.AreEqual(25, EvaluateExpression("2 * 8 + 21 / 7 * 4 - 15 + 6 + 3 * 8 / 4 / 2 - 1 + 4"));
         }
 
         [Test]
         public void TestSimpleParenthesisExpression()
         {
-            var _tokenStream = new MigraineLexer().Tokenize("(3)");
-            var expression = new Parser(_tokenStream).Parse();
-
-            Assert.AreEqual(3, expression.Evaluate());
+            Assert.AreEqual(3, EvaluateExpression("(3)"));
         }
 
         [Test]
         public void TestParenthesisPrecedence()
         {
-            var tokens = new MigraineLexer().Tokenize("(3 + 4) * 2");
-            var expression = new Parser(tokens).Parse();
-
-            Assert.AreEqual(14, expression.Evaluate());
+            Assert.AreEqual(14, EvaluateExpression("(3 + 4) * 2"));
         }
 
         [Test]
         public void TestUnaryMinus()
         {
-            var tokens = new MigraineLexer().Tokenize("-(-3 + 5 * -(14 - -7)) / -2");
-            var expression = new Parser(tokens).Parse();
-
-            Assert.AreEqual(-54, expression.Evaluate());
+            Assert.AreEqual(-54, EvaluateExpression("-(-3 + 5 * -(14 - -7)) / -2"));
         }
     }
 }
