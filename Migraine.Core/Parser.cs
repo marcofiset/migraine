@@ -17,21 +17,16 @@ namespace Migraine.Core
     /// Factor     :== ('-')? ( Number | ParenExpression )
     /// ParenExpression :== '(' Expression ')'
     /// 
-    /// What I would like to support in the future :
-    /// 
-    /// Expression :== Term ( ('+' | '-') Term)*
-    /// Term       :== Factor ( ('*' | '/') Factor )*
-    /// Factor     :== ('-')? ( Number | ParenExpression ) ('^' (Number | ParenExpression))?
-    /// 
     /// Number is defined by the Number token type provided by the Lexer
     /// 
-    /// It currently does not support exponent operator
+    /// I decided not to support the exponent operator because of precedence issue that might arise,
+    /// as there are no universally accepted way of doing it right.
     /// </summary>
     public class Parser
     {
         private TokenStream tokenStream;
 
-        public Token CurrentToken 
+        private Token CurrentToken 
         { 
             get { return tokenStream.CurrentToken; } 
         }
@@ -82,6 +77,7 @@ namespace Migraine.Core
             {
                 var op = CurrentToken.Value;
                 tokenStream.Consume();
+
                 var rightFactor = ParseFactor();
 
                 restOfExpression.Add(Tuple.Create(op, rightFactor));
