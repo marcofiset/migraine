@@ -70,14 +70,12 @@ namespace Migraine.Core.Tests
         [Test]
         public void ConsumeWrongTypeThrowsExpectedTokenException()
         {
-            var previousCount = _tokenStream.Count;
             Assert.Throws(typeof(ExpectedTokenException), () => _tokenStream.Consume(TokenType.Operator));
         }
 
         [Test]
         public void ConsumeWrongValueThrowsExpectedTokenException()
         {
-            var previousCount = _tokenStream.Count;
             Assert.Throws(typeof(ExpectedTokenException), () => _tokenStream.Consume("+"));
         }
 

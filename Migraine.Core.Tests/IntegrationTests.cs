@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Migraine.Core.Tests
 {
     [TestFixture]
-    public class ParserTests
+    public class IntegrationTests
     {
         private TokenStream _tokenStream;
         private MigraineLexer _lexer;
@@ -33,48 +33,34 @@ namespace Migraine.Core.Tests
         public void TestAddition()
         {
             Assert.AreEqual(72, EvaluateExpression("32 + 40"));
+            Assert.AreEqual(40, EvaluateExpression("15 + 20 + 5"));
         }
 
         [Test]
         public void TestSubstraction()
         {
             Assert.AreEqual(12, EvaluateExpression("42 - 30"));
+            Assert.AreEqual(6, EvaluateExpression("42 - 30 - 6"));
         }
 
         [Test]
         public void TestMultiplication()
         {
             Assert.AreEqual(56, EvaluateExpression("8 * 7"));
+            Assert.AreEqual(80, EvaluateExpression("5 * 2 * 8"));
         }
 
         [Test]
         public void TestDivision()
         {
             Assert.AreEqual(8, EvaluateExpression("56 / 7"));
-        }
-
-        [Test]
-        public void TestMultipleAddition()
-        {
-            Assert.AreEqual(40, EvaluateExpression("15 + 20 + 5"));
+            Assert.AreEqual(2, EvaluateExpression("80 / 20 / 2"));
         }
 
         [Test]
         public void TestOperatorPrecedence()
         {
-            Assert.AreEqual(21, EvaluateExpression("15 - 20 / 5 + 10"));
-        }
-
-        [Test]
-        public void TestMultipleMultiplication()
-        {
-            Assert.AreEqual(80, EvaluateExpression("5 * 2 * 8"));
-        }
-
-        [Test]
-        public void TestMultipleDivision()
-        {
-            Assert.AreEqual(2, EvaluateExpression("80 / 20 / 2"));
+            Assert.AreEqual(31, EvaluateExpression("15 - 20 / 5 + 10 * 2"));
         }
 
         [Test]
@@ -93,6 +79,7 @@ namespace Migraine.Core.Tests
         public void TestParenthesisPrecedence()
         {
             Assert.AreEqual(14, EvaluateExpression("(3 + 4) * 2"));
+            Assert.AreEqual(3.5, EvaluateExpression("(3 + 4) / 2"));
         }
 
         [Test]
