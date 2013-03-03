@@ -1,4 +1,5 @@
 ﻿using Migraine.Core.Nodes;
+using Migraine.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,11 +29,16 @@ namespace Migraine.Core
     /// </summary>
     public class Parser
     {
-        private Queue<Token> tokenQueue;
+        private TokenStream tokenStream;
 
-        public Parser(Queue<Token> tokens)
+        public Token CurrentToken 
+        { 
+            get { return tokenStream.CurrentToken; } 
+        }
+
+        public Parser(TokenStream tokens)
         {
-            tokenQueue = tokens;
+            tokenStream = tokens;
         }
 
         public Node Parse()
@@ -43,22 +49,20 @@ namespace Migraine.Core
         private Node ParseExpression()
         {
             var leftTerm = ParseTerm();
-            if (tokenQueue.Count == 0) return leftTerm;
+            if (tokenStream.IsEmpty) return leftTerm;
 
             var restOfExpression = new List<Tuple<string, Node>>();
 
-            var currentToken = tokenQueue.Peek();
-
-            while (currentToken.Value == "+" || currentToken.Value == "-")
+            while (CurrentToken.Value == "+" || CurrentToken.Value == "-")
             {
-                var op = tokenQueue.Dequeue().Value;
+                var op = CurrentToken.Value;
+                tokenStream.Consume();
+
                 var rightTerm = ParseTerm();
 
                 restOfExpression.Add(Tuple.Create(op, rightTerm));
 
-                if (tokenQueue.Count == 0) break;
-
-                currentToken = tokenQueue.Peek();
+                if (tokenStream.IsEmpty) break;
             }
 
             if (restOfExpression.Count == 0)
@@ -70,22 +74,19 @@ namespace Migraine.Core
         private Node ParseTerm()
         {
             var leftFactor = ParseFactor();
-            if (tokenQueue.Count == 0) return leftFactor;
+            if (tokenStream.IsEmpty) return leftFactor;
 
             var restOfExpression = new List<Tuple<string, Node>>();
 
-            var currentToken = tokenQueue.Peek();
-
-            while (currentToken.Value == "*" || currentToken.Value == "/")
+            while (CurrentToken.Value == "*" || CurrentToken.Value == "/")
             {
-                var op = tokenQueue.Dequeue().Value;
+                var op = CurrentToken.Value;
+                tokenStream.Consume();
                 var rightFactor = ParseFactor();
 
                 restOfExpression.Add(Tuple.Create(op, rightFactor));
 
-                if (tokenQueue.Count == 0) break;
-
-                currentToken = tokenQueue.Peek();
+                if (tokenStream.IsEmpty) break;
             }
 
             if (restOfExpression.Count == 0)
@@ -96,39 +97,29 @@ namespace Migraine.Core
 
         private Node ParseFactor()
         {
-            var currentToken = tokenQueue.Peek();
             bool positive = true;
 
-            if (currentToken.Value == "-")
+            if (CurrentToken.Value == "-")
             {
-                tokenQueue.Dequeue();
+                tokenStream.Consume();
                 positive = false;
-                currentToken = tokenQueue.Peek();
             }
 
             Node factor = null;
 
-            if (currentToken.Type == TokenType.Number)
+            if (CurrentToken.Type == TokenType.Number)
             {
-                tokenQueue.Dequeue();
-                Double termValue = Convert.ToDouble(currentToken.Value);
+                Double termValue = Convert.ToDouble(CurrentToken.Value);
+                tokenStream.Consume();
 
                 factor = new NumberNode(termValue);
             }
-            else if (currentToken.Value == "(")
+            else if (CurrentToken.Value == "(")
             {
-                tokenQueue.Dequeue();
+                tokenStream.Consume();
                 factor = ParseExpression();
 
-                if (tokenQueue.Count == 0)
-                    throw new Exception(") expected");
-
-                currentToken = tokenQueue.Peek();
-                
-                if (currentToken.Value == ")")
-                    tokenQueue.Dequeue();
-                else
-                    throw new Exception(") expected");
+                tokenStream.Consume(")");
             }
 
             if (factor == null)
