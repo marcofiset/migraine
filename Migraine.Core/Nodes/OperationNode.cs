@@ -11,6 +11,7 @@ namespace Migraine.Core.Nodes
         private Node leftNode;
         private List<Tuple<string, Node>> restOfExpression;
 
+        //TODO: Get rid of this constructor. Not needed anymore.
         public OperationNode(Node leftNode, string op, Node rightNode)
         {
             if (leftNode == null) throw new ArgumentNullException("leftNode");
@@ -34,6 +35,7 @@ namespace Migraine.Core.Nodes
 
         public override double Evaluate()
         {
+            //TODO: Make this a single line. Don't know what I was thinking.
             double left = leftNode.Evaluate();
             double result = left;
 
