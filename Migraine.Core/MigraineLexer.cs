@@ -17,7 +17,7 @@ namespace Migraine.Core
 
             var operatorRegex = new Regex(operatorPattern);
             var whiteSpaceRegex = new Regex(@"[\s]+");
-            var numberRegex = new Regex(@"(\d)+(\.[\d])*");
+            var numberRegex = new Regex(@"(\d)+(\.[\d])?");
             var identifierRegex = new Regex(@"[A-Za-z0-9_]+");
 
             var tokenDefinitions = new List<TokenDefinition>();
