@@ -53,7 +53,7 @@
             this.programTextBox.Location = new System.Drawing.Point(12, 34);
             this.programTextBox.Multiline = true;
             this.programTextBox.Name = "programTextBox";
-            this.programTextBox.Size = new System.Drawing.Size(502, 145);
+            this.programTextBox.Size = new System.Drawing.Size(502, 108);
             this.programTextBox.TabIndex = 0;
             // 
             // label1
@@ -82,7 +82,7 @@
             // 
             this.executeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.executeButton.Font = new System.Drawing.Font("Trebuchet MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.executeButton.Location = new System.Drawing.Point(520, 147);
+            this.executeButton.Location = new System.Drawing.Point(520, 110);
             this.executeButton.Name = "executeButton";
             this.executeButton.Size = new System.Drawing.Size(142, 32);
             this.executeButton.TabIndex = 3;
@@ -108,7 +108,7 @@
             this.inputTextBox.Location = new System.Drawing.Point(6, 81);
             this.inputTextBox.Multiline = true;
             this.inputTextBox.Name = "inputTextBox";
-            this.inputTextBox.Size = new System.Drawing.Size(304, 77);
+            this.inputTextBox.Size = new System.Drawing.Size(304, 25);
             this.inputTextBox.TabIndex = 5;
             // 
             // promptForInputRadioButton
@@ -130,9 +130,9 @@
             this.groupBox1.Controls.Add(this.promptForInputRadioButton);
             this.groupBox1.Controls.Add(this.inputTextBox);
             this.groupBox1.Font = new System.Drawing.Font("Trebuchet MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(16, 196);
+            this.groupBox1.Location = new System.Drawing.Point(22, 148);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(320, 169);
+            this.groupBox1.Size = new System.Drawing.Size(320, 121);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Program Input";
@@ -153,9 +153,9 @@
             // 
             this.groupBox2.Controls.Add(this.outputTextBox);
             this.groupBox2.Font = new System.Drawing.Font("Trebuchet MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(342, 196);
+            this.groupBox2.Location = new System.Drawing.Point(342, 148);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(320, 169);
+            this.groupBox2.Size = new System.Drawing.Size(320, 121);
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Program Output";
@@ -165,16 +165,16 @@
             this.outputTextBox.Location = new System.Drawing.Point(6, 25);
             this.outputTextBox.Multiline = true;
             this.outputTextBox.Name = "outputTextBox";
-            this.outputTextBox.Size = new System.Drawing.Size(304, 133);
+            this.outputTextBox.Size = new System.Drawing.Size(304, 81);
             this.outputTextBox.TabIndex = 5;
             // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.memoryGridView);
             this.groupBox3.Font = new System.Drawing.Font("Trebuchet MS", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(12, 371);
+            this.groupBox3.Location = new System.Drawing.Point(12, 275);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(650, 169);
+            this.groupBox3.Size = new System.Drawing.Size(650, 275);
             this.groupBox3.TabIndex = 9;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Program Memory";
@@ -187,7 +187,7 @@
             this.memoryGridView.Location = new System.Drawing.Point(10, 25);
             this.memoryGridView.Name = "memoryGridView";
             this.memoryGridView.ReadOnly = true;
-            this.memoryGridView.Size = new System.Drawing.Size(630, 138);
+            this.memoryGridView.Size = new System.Drawing.Size(630, 231);
             this.memoryGridView.TabIndex = 0;
             // 
             // MainForm

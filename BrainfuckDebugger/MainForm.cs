@@ -7,7 +7,8 @@ namespace BrainfuckDebugger
 {
     public partial class MainForm : Form, IMainView
     {
-        private MainViewPresenter presenter;
+        private MainViewPresenter _presenter;
+        private Int32 _nextInputIndex;
 
         /// <summary>
         /// The string of the Brainfuck program
@@ -28,7 +29,8 @@ namespace BrainfuckDebugger
         {
             InitializeComponent();
 
-            this.presenter = new MainViewPresenter(this);
+            _presenter = new MainViewPresenter(this);
+            _nextInputIndex = 0;
         }
 
         /// <summary>
@@ -38,7 +40,6 @@ namespace BrainfuckDebugger
         /// <returns>The file name chosen by the user</returns>
         public string ChooseFile(FileAction action)
         {
-
             FileDialog fileDialog;
 
             switch (action)
@@ -74,8 +75,15 @@ namespace BrainfuckDebugger
                     return inputForm.Value;
                 }
             }
+            else
+            {
+                var inputValues = inputTextBox.Text.Split(';');
 
-            throw new Exception("Input has been pre-supplied");
+                if (_nextInputIndex >= inputValues.Length)
+                    throw new Exception("You did not supply enough arguments");
+
+                return inputValues[_nextInputIndex++];
+            }
         }
 
         /// <summary>
@@ -100,17 +108,18 @@ namespace BrainfuckDebugger
 
         private void loadFromFileButton_Click(object sender, System.EventArgs e)
         {
-            presenter.LoadFromFile();
+            _presenter.LoadFromFile();
         }
 
         private void executeButton_Click(object sender, System.EventArgs e)
         {
-            presenter.ExecuteProgram();
+            _nextInputIndex = 0;
+            _presenter.ExecuteProgram();
         }
 
         private void saveToFileButton_Click(object sender, System.EventArgs e)
         {
-            presenter.SaveToFile();
+            _presenter.SaveToFile();
         }
 
         private void preSupplyInputRadioButton_CheckedChanged(object sender, EventArgs e)
