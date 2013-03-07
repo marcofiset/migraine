@@ -1,4 +1,5 @@
 ﻿using Migraine.Core.Nodes;
+using Migraine.Core.Visitors;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace Migraine.Core.Tests
             _tokenStream = _lexer.Tokenize(expression);
             var parser = new Parser(_tokenStream);
 
-            return parser.Parse().Evaluate();
+            return parser.Parse().Accept(new MigraineAstEvaluator());
         }
 
         [Test]

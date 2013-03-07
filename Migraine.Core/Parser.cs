@@ -12,10 +12,13 @@ namespace Migraine.Core
     /// This is the parser class.
     /// The following grammar is supported :
     /// 
-    /// Expression :== Term ( ('+' | '-') Term)*
-    /// Term       :== Factor ( ('*' | '/') Factor )*
-    /// Factor     :== ('-')? ( Number | ParenExpression )
-    /// ParenExpression :== '(' Expression ')'
+    /// Expression      = Assignment | Operation, Terminator
+    /// Assignment      = Identifier, "=", Operation
+    /// Operation       = Term { "+" | "-", Term }
+    /// Term            = Factor { "*" | "/", Factor }
+    /// Factor          = [ "-" ], Number | Identifier | ParenExpression
+    /// ParenExpression = "(", Expression, ")"
+    /// Terminator      = NewLine
     /// 
     /// Number is defined by the Number token type provided by the Lexer
     /// 
@@ -93,12 +96,10 @@ namespace Migraine.Core
 
         private Node ParseFactor()
         {
-            bool positive = true;
-
             if (CurrentToken.Value == "-")
             {
                 tokenStream.Consume();
-                positive = false;
+                return new UnaryMinusNode(ParseFactor());
             }
 
             Node factor = null;
@@ -120,9 +121,6 @@ namespace Migraine.Core
 
             if (factor == null)
                 throw new Exception("Number or () expression expected");
-
-            if (!positive)
-                return new UnaryMinusNode(factor);
 
             return factor;
         }

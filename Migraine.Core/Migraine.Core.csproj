@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="GenericLexer.cs" />
     <Compile Include="MigraineLexer.cs" />
+    <Compile Include="Visitors\IVisitable.cs" />
     <Compile Include="Nodes\Node.cs" />
     <Compile Include="Nodes\NumberNode.cs" />
     <Compile Include="Nodes\OperationNode.cs" />
@@ -51,6 +52,8 @@
     <Compile Include="TokenDefinition.cs" />
     <Compile Include="TokenStream.cs" />
     <Compile Include="TokenType.cs" />
+    <Compile Include="Visitors\IMigraineAstVisitor.cs" />
+    <Compile Include="Visitors\MigraineAstEvaluator.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

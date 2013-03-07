@@ -8,16 +8,16 @@ namespace Migraine.Core.Nodes
 {
     public class NumberNode : Node
     {
-        private double value;
+        public Double Value { get; private set; }
 
         public NumberNode(double value)
         {
-            this.value = value;
+            Value = value;
         }
 
-        public override double Evaluate()
+        public override TReturn Accept<TReturn>(Visitors.IMigraineAstVisitor<TReturn> visitor)
         {
-            return value;
+            return visitor.Visit(this);
         }
     }
 }

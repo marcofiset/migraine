@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Migraine.Core.Nodes;
+using Migraine.Core.Visitors;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,16 +10,16 @@ namespace Migraine.Core.Nodes
 {
     public class UnaryMinusNode : Node
     {
-        private Node _node;
+        public Node Node { get; private set; }
 
         public UnaryMinusNode(Node node)
         {
-            _node = node;
+            Node = node;
         }
 
-        public override double Evaluate()
+        public override TReturn Accept<TReturn>(IMigraineAstVisitor<TReturn> visitor)
         {
-            return -_node.Evaluate();
+            return visitor.Visit(this);
         }
     }
 }
