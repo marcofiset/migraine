@@ -14,13 +14,6 @@ learning purposes only and I have a lot of fun writing it. It is still in early 
 
 - Fully functional interpreter which uses integers as memory cells.
 
-#### Plans for the near future
-
-##### `;` and `:` operations
-
-`,` and `.` respectively allow to input and output integers. `;` and `:` will allow the input and output of strings.
-String management in Brainfuck is such a pain in the neck that I will make it easier this way. Call me lazy, I don't care!
-
 ### Migraine - The Brainfuck debugger
 
 #### What currently works
