@@ -110,5 +110,19 @@ namespace Migraine.Core.Tests
             Assert.Throws<ExpectedTokenException>(() => _tokenStream.Expect("+"));
             Assert.Throws<ExpectedTokenException>(() => _tokenStream.Expect(TokenType.Operator));
         }
+
+        [Test]
+        public void CanConsumeAnyTokenValueFromList()
+        {
+            Assert.IsFalse(_tokenStream.ConsumeAny("-", "10", ")"));
+            Assert.IsTrue(_tokenStream.ConsumeAny("+", "5"));
+        }
+
+        [Test]
+        public void CanConsumeAnyTokenTypeFromList()
+        {
+            Assert.IsFalse(_tokenStream.ConsumeAny(TokenType.Identifier, TokenType.Operator));
+            Assert.IsTrue(_tokenStream.ConsumeAny(TokenType.Operator, TokenType.Number));
+        }
     }
 }

@@ -56,11 +56,9 @@ namespace Migraine.Core
 
             var restOfExpression = new List<Tuple<string, Node>>();
 
-            while (CurrentToken.Value == "+" || CurrentToken.Value == "-")
+            while (tokenStream.ConsumeAny("+", "-"))
             {
-                var op = CurrentToken.Value;
-                tokenStream.Consume();
-
+                var op = ConsumedToken.Value;
                 var rightTerm = ParseTerm();
 
                 restOfExpression.Add(Tuple.Create(op, rightTerm));
@@ -81,11 +79,9 @@ namespace Migraine.Core
 
             var restOfExpression = new List<Tuple<string, Node>>();
 
-            while (CurrentToken.Value == "*" || CurrentToken.Value == "/")
+            while (tokenStream.ConsumeAny("*", "/"))
             {
-                var op = CurrentToken.Value;
-                tokenStream.Consume();
-
+                var op = ConsumedToken.Value;
                 var rightFactor = ParseFactor();
 
                 restOfExpression.Add(Tuple.Create(op, rightFactor));

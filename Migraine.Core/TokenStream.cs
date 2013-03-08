@@ -46,6 +46,7 @@ namespace Migraine.Core
         /// Consumes the current token regardless of its value or type.
         /// </summary>
         /// <exception cref="TokenStreamEmptyException">If stream is empty</exception>
+        /// <returns>True if a token was consumed, false otherwise</returns>
         public Boolean Consume()
         {
             if (IsEmpty)
@@ -61,6 +62,7 @@ namespace Migraine.Core
         /// </summary>
         /// <param name="tokenValue">The expected token value</param>
         /// <exception cref="TokenStreamEmptyException">If stream is empty</exception>
+        /// <returns>True if a token was consumed, false otherwise</returns>
         public Boolean Consume(String tokenValue)
         {
             if (CurrentToken.Value != tokenValue)
@@ -70,16 +72,47 @@ namespace Migraine.Core
         }
 
         /// <summary>
+        /// Consumes the token with the first matching value encountered.
+        /// </summary>
+        /// <param name="values">Any number of possible values</param>
+        /// <returns>True if any value matched, false if none of the values matched</returns>
+        public Boolean ConsumeAny(params string[] values)
+        {
+            foreach (String value in values)
+            {
+                if (Consume(value)) return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Consumes the current token by TokenType
         /// </summary>
         /// <param name="tokenType">The expected TokenType</param>
         /// <exception cref="TokenStreamEmptyException">If stream is empty</exception>
+        /// <returns>True if a token was consumed, false otherwise</returns>
         public Boolean Consume(TokenType tokenType)
         {
             if (CurrentToken.Type != tokenType)
                 return false;
 
             return Consume();
+        }
+
+        /// <summary>
+        /// Consumes the token with the first matching type encountered.
+        /// </summary>
+        /// <param name="types">Any number of possible types</param>
+        /// <returns>True if any type matched, false if none of the types matched</returns>
+        public Boolean ConsumeAny(params TokenType[] types)
+        {
+            foreach (var type in types)
+            {
+                if (Consume(type)) return true;
+            }
+
+            return false;
         }
 
         /// <summary>
