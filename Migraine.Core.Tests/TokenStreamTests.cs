@@ -32,19 +32,19 @@ namespace Migraine.Core.Tests
         [Test]
         public void StreamCanConsumeAnyToken()
         {
-            _tokenStream.Consume();
+            Assert.IsTrue(_tokenStream.Consume());
         }
 
         [Test]
         public void StreamCanConsumeTokenByValue()
         {
-            _tokenStream.Consume("5");
+            Assert.IsTrue(_tokenStream.Consume("5"));
         }
 
         [Test]
         public void StreamCanConsumeTokenByType()
         {
-            _tokenStream.Consume(TokenType.Number);
+            Assert.IsTrue(_tokenStream.Consume(TokenType.Number));
         }
 
         [Test]
@@ -68,15 +68,15 @@ namespace Migraine.Core.Tests
         }
 
         [Test]
-        public void ConsumeWrongTypeThrowsExpectedTokenException()
+        public void ConsumeWrongTypeReturnsFalse()
         {
-            Assert.Throws(typeof(ExpectedTokenException), () => _tokenStream.Consume(TokenType.Operator));
+            Assert.IsFalse(_tokenStream.Consume(TokenType.Operator));
         }
 
         [Test]
-        public void ConsumeWrongValueThrowsExpectedTokenException()
+        public void ConsumeWrongValueReturnsFalse()
         {
-            Assert.Throws(typeof(ExpectedTokenException), () => _tokenStream.Consume("+"));
+            Assert.IsFalse(_tokenStream.Consume("+"));
         }
 
         [Test]
@@ -84,6 +84,31 @@ namespace Migraine.Core.Tests
         {
             _tokenStream.Consume();
             Assert.Throws(typeof(TokenStreamEmptyException), () => _tokenStream.Consume());
+        }
+
+        [Test]
+        public void CanAccessConsumedToken()
+        {
+            var currentToken = _tokenStream.CurrentToken;
+            _tokenStream.Consume();
+            Assert.AreEqual(currentToken, _tokenStream.ConsumedToken);
+        }
+
+        [Test]
+        public void ExpectBehavesAsConsume()
+        {
+            var currentToken = _tokenStream.CurrentToken;
+            Assert.IsTrue(_tokenStream.Expect(TokenType.Number));
+
+            _tokenStream.Add(currentToken);
+            Assert.IsTrue(_tokenStream.Expect("5"));
+        }
+
+        [Test]
+        public void ExpectThrowsExceptionIfWrongTypeOrValue()
+        {
+            Assert.Throws<ExpectedTokenException>(() => _tokenStream.Expect("+"));
+            Assert.Throws<ExpectedTokenException>(() => _tokenStream.Expect(TokenType.Operator));
         }
     }
 }

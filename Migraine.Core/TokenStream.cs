@@ -23,6 +23,7 @@ namespace Migraine.Core
     public class TokenStream
     {
         private Queue<Token> _queue;
+        private Token _lastConsumedToken;
 
         /// <summary>
         /// Default constructor
@@ -45,40 +46,70 @@ namespace Migraine.Core
         /// Consumes the current token regardless of its value or type.
         /// </summary>
         /// <exception cref="TokenStreamEmptyException">If stream is empty</exception>
-        public void Consume()
+        public Boolean Consume()
         {
             if (IsEmpty)
                 throw new TokenStreamEmptyException();
 
-            _queue.Dequeue();
+            _lastConsumedToken = _queue.Dequeue();
+
+            return true;
         }
 
         /// <summary>
         /// Consumes the current token by value
         /// </summary>
         /// <param name="tokenValue">The expected token value</param>
-        /// <exception cref="ExpectedTokenException">If current token's value is not the expected one</exception>
         /// <exception cref="TokenStreamEmptyException">If stream is empty</exception>
-        public void Consume(string tokenValue)
+        public Boolean Consume(String tokenValue)
         {
             if (CurrentToken.Value != tokenValue)
-                throw new ExpectedTokenException(tokenValue);
+                return false;
 
-            Consume();
+            return Consume();
         }
 
         /// <summary>
         /// Consumes the current token by TokenType
         /// </summary>
         /// <param name="tokenType">The expected TokenType</param>
-        /// <exception cref="ExpectedTokenException">If current token's type is not the expected one</exception>
         /// <exception cref="TokenStreamEmptyException">If stream is empty</exception>
-        public void Consume(TokenType tokenType)
+        public Boolean Consume(TokenType tokenType)
         {
             if (CurrentToken.Type != tokenType)
-                throw new ExpectedTokenException(tokenType);
+                return false;
 
-            Consume();
+            return Consume();
+        }
+
+        /// <summary>
+        /// Expects the current token's type to be of a specific type.
+        /// If CurrentToken's type is of the wrong type, an ExpectedTokenTokenException is thrown.
+        /// </summary>
+        /// <param name="type">The expected TokenType</param>
+        /// <exception cref="ExpectedTokenException"></exception>
+        /// <returns>A Boolean indicating whether the current token is of the specified type</returns>
+        public Boolean Expect(TokenType type)
+        {
+            if (CurrentToken.Type != type)
+                throw new ExpectedTokenException(type);
+
+            return Consume(type);
+        }
+
+        /// <summary>
+        /// Expects the current token's value to be of a specific value.
+        /// If CurrentToken's value is of the wrong value, an ExpectedTokenTokenException is thrown.
+        /// </summary>
+        /// <param name="type">The expected value</param>
+        /// <exception cref="ExpectedTokenException"></exception>
+        /// <returns>A Boolean indicating whether the current token is of the specified type</returns>
+        public Boolean Expect(String value)
+        {
+            if (CurrentToken.Value != value)
+                throw new ExpectedTokenException(value);
+
+            return Consume(value);
         }
 
         /// <summary>
@@ -103,6 +134,14 @@ namespace Migraine.Core
         public Token CurrentToken
         {
             get { return IsEmpty ? null : _queue.Peek(); }
+        }
+
+        /// <summary>
+        /// Gets the token that was last consumed
+        /// </summary>
+        public Token ConsumedToken 
+        {
+            get { return _lastConsumedToken; } 
         }
     }
 }

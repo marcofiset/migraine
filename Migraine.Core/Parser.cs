@@ -34,6 +34,11 @@ namespace Migraine.Core
             get { return tokenStream.CurrentToken; } 
         }
 
+        private Token ConsumedToken
+        {
+            get { return tokenStream.ConsumedToken; }
+        }
+
         public Parser(TokenStream tokens)
         {
             tokenStream = tokens;
@@ -96,27 +101,22 @@ namespace Migraine.Core
 
         private Node ParseFactor()
         {
-            if (CurrentToken.Value == "-")
-            {
-                tokenStream.Consume();
+            if (tokenStream.Consume("-"))
                 return new UnaryMinusNode(ParseFactor());
-            }
 
             Node factor = null;
 
-            if (CurrentToken.Type == TokenType.Number)
+            if (tokenStream.Consume(TokenType.Number))
             {
-                Double termValue = Convert.ToDouble(CurrentToken.Value);
-                tokenStream.Consume();
+                Double termValue = Convert.ToDouble(ConsumedToken.Value);
 
                 factor = new NumberNode(termValue);
             }
-            else if (CurrentToken.Value == "(")
+            else if (tokenStream.Consume("("))
             {
-                tokenStream.Consume();
                 factor = ParseExpression();
 
-                tokenStream.Consume(")");
+                tokenStream.Expect(")");
             }
 
             if (factor == null)
