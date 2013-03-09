@@ -52,5 +52,24 @@ namespace Migraine.Core.Tests
 
             Assert.IsInstanceOf<OperationNode>(node.Expressions.First());
         }
+
+        [Test]
+        public void CanParseExpressionListNode()
+        {
+            _tokens.Add(new Token("32", TokenType.Number));
+            _tokens.Add(new Token("-", TokenType.Operator));
+            _tokens.Add(new Token("24", TokenType.Number));
+
+            _tokens.Add(new Token(@"\n", TokenType.NewLine));
+
+            _tokens.Add(new Token("8", TokenType.Number));
+            _tokens.Add(new Token("*", TokenType.Operator));
+            _tokens.Add(new Token("9", TokenType.Number));
+
+            var node = _parser.Parse();
+
+            Assert.IsInstanceOf<ExpressionListNode>(node);
+            Assert.AreEqual(2, (node as ExpressionListNode).Expressions.Count());
+        }
     }
 }
