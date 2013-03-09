@@ -71,5 +71,14 @@ namespace Migraine.Core.Tests
             Assert.IsInstanceOf<ExpressionListNode>(node);
             Assert.AreEqual(2, (node as ExpressionListNode).Expressions.Count());
         }
+
+        [Test]
+        public void CanParseIdentifierNode()
+        {
+            _tokens.Add(new Token("number", TokenType.Identifier));
+            var node = _parser.Parse() as ExpressionListNode;
+
+            Assert.IsInstanceOf<IdentifierNode>(node.Expressions.First());
+        }
     }
 }

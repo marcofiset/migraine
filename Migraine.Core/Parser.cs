@@ -51,6 +51,7 @@ namespace Migraine.Core
             return ParseExpressionList();
         }
 
+        // ExpressionList = Expression { Terminator, Expression }
         private Node ParseExpressionList()
         {
             var result = new List<Node>();
@@ -66,7 +67,17 @@ namespace Migraine.Core
             return new ExpressionListNode(result);
         }
 
+        // Expression = Assignment | Operation
         private Node ParseExpression()
+        {
+            var node = ParseAssignment();
+            if (node != null) return node;
+
+            return ParseOperation();
+        }
+
+        // Operation = Term { "+" | "-", Term }
+        private Node ParseOperation()
         {
             var leftTerm = ParseTerm();
             if (tokenStream.IsEmpty) return leftTerm;
@@ -89,6 +100,13 @@ namespace Migraine.Core
             return new OperationNode(leftTerm, restOfExpression);
         }
 
+        // Assignment = Identifier, "=", Expression
+        private Node ParseAssignment()
+        {
+            return null;
+        }
+
+        // Term = Factor { "*" | "/", Factor }
         private Node ParseTerm()
         {
             var leftFactor = ParseFactor();
@@ -112,6 +130,7 @@ namespace Migraine.Core
             return new OperationNode(leftFactor, restOfExpression); ;
         }
 
+        // Factor = [ "-" ], Number | Identifier | ParenExpression
         private Node ParseFactor()
         {
             if (tokenStream.Consume("-"))
@@ -125,6 +144,10 @@ namespace Migraine.Core
 
                 factor = new NumberNode(termValue);
             }
+            else if (tokenStream.Consume(TokenType.Identifier))
+            {
+                factor = new IdentifierNode(tokenStream.ConsumedToken.Value);
+            }
             else if (tokenStream.Consume("("))
             {
                 factor = ParseExpression();
@@ -133,7 +156,7 @@ namespace Migraine.Core
             }
 
             if (factor == null)
-                throw new Exception("Number or () expression expected");
+                throw new Exception("Number, identifier or () expression expected");
 
             return factor;
         }
