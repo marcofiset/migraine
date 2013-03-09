@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Migraine.Core
 {
@@ -12,8 +13,9 @@ namespace Migraine.Core
     /// This is the parser class.
     /// The following grammar is supported :
     /// 
-    /// Expression      = Assignment | Operation, Terminator
-    /// Assignment      = Identifier, "=", Operation
+    /// ExpressionList  = Expression { Terminator, Expression }
+    /// Expression      = Assignment | Operation
+    /// Assignment      = Identifier, "=", Expression
     /// Operation       = Term { "+" | "-", Term }
     /// Term            = Factor { "*" | "/", Factor }
     /// Factor          = [ "-" ], Number | Identifier | ParenExpression
@@ -46,7 +48,22 @@ namespace Migraine.Core
 
         public Node Parse()
         {
-            return ParseExpression();
+            return ParseExpressionList();
+        }
+
+        private Node ParseExpressionList()
+        {
+            var result = new List<Node>();
+
+            result.Add(ParseExpression());
+
+            while (!tokenStream.IsEmpty)
+            {
+                tokenStream.Expect(TokenType.NewLine);
+                result.Add(ParseExpression());
+            }
+
+            return new ExpressionListNode(result);
         }
 
         private Node ParseExpression()
@@ -104,7 +121,7 @@ namespace Migraine.Core
 
             if (tokenStream.Consume(TokenType.Number))
             {
-                Double termValue = Convert.ToDouble(ConsumedToken.Value);
+                Double termValue = Convert.ToDouble(ConsumedToken.Value, CultureInfo.InvariantCulture);
 
                 factor = new NumberNode(termValue);
             }

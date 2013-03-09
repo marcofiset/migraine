@@ -12,5 +12,6 @@ namespace Migraine.Core.Visitors
         TReturn Visit(NumberNode node);
         TReturn Visit(UnaryMinusNode node);
         TReturn Visit(OperationNode node);
+        TReturn Visit(ExpressionListNode node);
     }
 }

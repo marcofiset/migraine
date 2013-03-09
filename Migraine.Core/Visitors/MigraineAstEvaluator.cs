@@ -56,5 +56,17 @@ namespace Migraine.Core.Visitors
 
             return result;
         }
+
+        public Double Visit(ExpressionListNode node)
+        {
+            Double lastValue = 0;
+
+            foreach (var expression in node.Expressions)
+            {
+                lastValue = expression.Accept(this);
+            }
+
+            return lastValue;
+        }
     }
 }

@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="GenericLexer.cs" />
     <Compile Include="MigraineLexer.cs" />
+    <Compile Include="Nodes\ExpressionListNode.cs" />
     <Compile Include="Visitors\IVisitable.cs" />
     <Compile Include="Nodes\Node.cs" />
     <Compile Include="Nodes\NumberNode.cs" />
