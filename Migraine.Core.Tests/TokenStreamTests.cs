@@ -124,5 +124,32 @@ namespace Migraine.Core.Tests
             Assert.IsFalse(_tokenStream.ConsumeAny(TokenType.Identifier, TokenType.Operator));
             Assert.IsTrue(_tokenStream.ConsumeAny(TokenType.Operator, TokenType.Number));
         }
+
+        [Test]
+        public void CanUseLookAhead()
+        {
+            _tokenStream.Add(new Token("+", TokenType.Operator));
+
+            Assert.AreEqual("+", _tokenStream.LookAhead().Value);
+            Assert.AreEqual(TokenType.Operator, _tokenStream.LookAhead().Type);
+        }
+
+        [Test]
+        public void CanSpecifyLookAheadPosition()
+        {
+            var opToken = new Token("+", TokenType.Operator);
+            var numToken = new Token("3", TokenType.Number);
+
+            _tokenStream.Add(opToken);
+            _tokenStream.Add(numToken);
+
+            Assert.AreEqual(numToken, _tokenStream.LookAhead(2));
+        }
+
+        [Test]
+        public void LookAheadTooFarReturnsNull()
+        {
+            Assert.IsNull(_tokenStream.LookAhead(2));
+        }
     }
 }

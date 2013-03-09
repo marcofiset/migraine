@@ -176,5 +176,14 @@ namespace Migraine.Core
         {
             get { return _lastConsumedToken; } 
         }
+
+        /// <summary>
+        /// Looks ahead at the specified position
+        /// </summary>
+        /// <returns>The token at the specified position, null if out of range</returns>
+        public Token LookAhead(int index = 1)
+        {
+            return _queue.ElementAtOrDefault(index);
+        }
     }
 }
