@@ -10,6 +10,6 @@ namespace Migraine.Core
         Operator,
         Identifier,
         Whitespace,
-        NewLine
+        Terminator
     }
 }

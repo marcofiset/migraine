@@ -51,13 +51,22 @@ namespace Migraine.Core.Tests
         }
 
         [Test]
-        public void CanProduceNewLineToken()
+        public void CanProduceTerminatorToken()
         {
             var program = @"
             ";
 
             var tokens = _lexer.Tokenize(program);
-            Assert.IsTrue(tokens.Consume(TokenType.NewLine));
+            Assert.IsTrue(tokens.Consume(TokenType.Terminator));
+        }
+
+        [Test]
+        public void CanProduceAssignmentToken()
+        {
+            var program = "=";
+            var tokens = _lexer.Tokenize(program);
+
+            Assert.IsTrue(tokens.Consume("="));
         }
     }
 }

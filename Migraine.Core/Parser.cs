@@ -60,7 +60,7 @@ namespace Migraine.Core
 
             while (!tokenStream.IsEmpty)
             {
-                tokenStream.Expect(TokenType.NewLine);
+                tokenStream.Expect(TokenType.Terminator);
                 result.Add(ParseExpression());
             }
 
@@ -70,8 +70,10 @@ namespace Migraine.Core
         // Expression = Assignment | Operation
         private Node ParseExpression()
         {
-            var node = ParseAssignment();
-            if (node != null) return node;
+            var token = tokenStream.LookAhead();
+
+            if (token != null && token.Value == "=")
+                return ParseAssignment();
 
             return ParseOperation();
         }
@@ -84,14 +86,12 @@ namespace Migraine.Core
 
             var restOfExpression = new List<Tuple<string, Node>>();
 
-            while (tokenStream.ConsumeAny("+", "-"))
+            while (!tokenStream.IsEmpty && tokenStream.ConsumeAny("+", "-"))
             {
                 var op = ConsumedToken.Value;
                 var rightTerm = ParseTerm();
 
                 restOfExpression.Add(Tuple.Create(op, rightTerm));
-
-                if (tokenStream.IsEmpty) break;
             }
 
             if (restOfExpression.Count == 0)
@@ -103,7 +103,13 @@ namespace Migraine.Core
         // Assignment = Identifier, "=", Expression
         private Node ParseAssignment()
         {
-            return null;
+            tokenStream.Consume(TokenType.Identifier);
+            var identifier = ConsumedToken.Value;
+
+            tokenStream.Expect("=");
+            var expression = ParseExpression();
+
+            return new AssignmentNode(identifier, expression);
         }
 
         // Term = Factor { "*" | "/", Factor }
@@ -114,14 +120,12 @@ namespace Migraine.Core
 
             var restOfExpression = new List<Tuple<string, Node>>();
 
-            while (tokenStream.ConsumeAny("*", "/"))
+            while (!tokenStream.IsEmpty && tokenStream.ConsumeAny("*", "/"))
             {
                 var op = ConsumedToken.Value;
                 var rightFactor = ParseFactor();
 
                 restOfExpression.Add(Tuple.Create(op, rightFactor));
-
-                if (tokenStream.IsEmpty) break;
             }
 
             if (restOfExpression.Count == 0)

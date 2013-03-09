@@ -60,7 +60,7 @@ namespace Migraine.Core.Tests
             _tokens.Add(new Token("-", TokenType.Operator));
             _tokens.Add(new Token("24", TokenType.Number));
 
-            _tokens.Add(new Token(@"\n", TokenType.NewLine));
+            _tokens.Add(new Token(@"\n", TokenType.Terminator));
 
             _tokens.Add(new Token("8", TokenType.Number));
             _tokens.Add(new Token("*", TokenType.Operator));
@@ -79,6 +79,32 @@ namespace Migraine.Core.Tests
             var node = _parser.Parse() as ExpressionListNode;
 
             Assert.IsInstanceOf<IdentifierNode>(node.Expressions.First());
+        }
+
+        [Test]
+        public void CanParseAssignmentNode()
+        {
+            _tokens.Add(new Token("var1", TokenType.Identifier));
+            _tokens.Add(new Token("=", TokenType.Operator));
+            _tokens.Add(new Token("2.75", TokenType.Number));
+
+            var node = _parser.Parse() as ExpressionListNode;
+
+            Assert.IsInstanceOf<AssignmentNode>(node.Expressions.First());
+        }
+
+        [Test]
+        public void CanParseComplexAssignmentNode()
+        {
+            _tokens.Add(new Token("var1", TokenType.Identifier));
+            _tokens.Add(new Token("=", TokenType.Operator));
+            _tokens.Add(new Token("2.75", TokenType.Number));
+            _tokens.Add(new Token("*", TokenType.Operator));
+            _tokens.Add(new Token("x", TokenType.Identifier));
+
+            var node = _parser.Parse() as ExpressionListNode;
+
+            Assert.IsInstanceOf<AssignmentNode>(node.Expressions.First());
         }
     }
 }

@@ -7,13 +7,15 @@ using System.Threading.Tasks;
 
 namespace Migraine.Core.Nodes
 {
-    public class IdentifierNode : Node
+    public class AssignmentNode : Node
     {
         public String Name { get; private set; }
+        public Node Expression { get; private set; }
 
-        public IdentifierNode(String name)
+        public AssignmentNode(String name, Node expression)
         {
             Name = name;
+            Expression = expression;
         }
 
         public override TReturn Accept<TReturn>(IMigraineAstVisitor<TReturn> visitor)

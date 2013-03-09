@@ -9,6 +9,13 @@ namespace Migraine.Core.Visitors
 {
     public class MigraineAstEvaluator : IMigraineAstVisitor<Double>
     {
+        private Dictionary<String, Double> variables;
+
+        public MigraineAstEvaluator()
+        {
+            variables = new Dictionary<String, Double>();
+        }
+
         public Double Visit(NumberNode node)
         {
             return node.Value;
@@ -67,6 +74,26 @@ namespace Migraine.Core.Visitors
             }
 
             return lastValue;
+        }
+
+
+        public Double Visit(AssignmentNode assignmentNode)
+        {
+            var result = assignmentNode.Expression.Accept(this);
+            var name = assignmentNode.Name;
+
+            if (!variables.ContainsKey(name))
+                variables.Add(name, result);
+            else
+                variables[name] = result;
+
+            return result;
+        }
+
+
+        public Double Visit(IdentifierNode identifierNode)
+        {
+            return variables[identifierNode.Name];
         }
     }
 }

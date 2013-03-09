@@ -13,11 +13,11 @@ namespace Migraine.Core
 
         public MigraineLexer()
         {
-            string operatorPattern = String.Format("[{0}]", Regex.Escape("()*/+-"));
+            string operatorPattern = String.Format("[{0}]", Regex.Escape("()*/+-="));
 
-            var operatorRegex = new Regex(operatorPattern);
+            var operatorRegex = new Regex(@"[\(\)\*/\+\-=]");
             var whiteSpaceRegex = new Regex(@"[ \t]+");
-            var newLineRegex = new Regex(@"\n");
+            var terminatorRegex = new Regex(@"[\n;]");
             var numberRegex = new Regex(@"(\d)+(\.[\d]+)?");
             var identifierRegex = new Regex(@"[A-Za-z0-9_]+");
 
@@ -27,7 +27,7 @@ namespace Migraine.Core
             tokenDefinitions.Add(new TokenDefinition(whiteSpaceRegex, TokenType.Whitespace));
             tokenDefinitions.Add(new TokenDefinition(numberRegex, TokenType.Number));
             tokenDefinitions.Add(new TokenDefinition(identifierRegex, TokenType.Identifier));
-            tokenDefinitions.Add(new TokenDefinition(newLineRegex, TokenType.NewLine));
+            tokenDefinitions.Add(new TokenDefinition(terminatorRegex, TokenType.Terminator));
 
             _lexer = new GenericLexer(tokenDefinitions);
         }

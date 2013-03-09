@@ -88,5 +88,17 @@ namespace Migraine.Core.Tests
         {
             Assert.AreEqual(-54, EvaluateExpression("-(-3 + 5 * -(14 - -7)) / -2"));
         }
+
+        [Test]
+        public void TestVariableAssignment()
+        {
+            Assert.AreEqual(2.625, EvaluateExpression("x = 2.625"));
+        }
+
+        [Test]
+        public void TestUseVariableInExpression()
+        {
+            Assert.AreEqual(-12, EvaluateExpression(@"x = 12; y = 2 * x; z = -y / 2"));
+        }
     }
 }
