@@ -16,8 +16,9 @@ namespace Migraine.Core
             string operatorPattern = String.Format("[{0}]", Regex.Escape("()*/+-"));
 
             var operatorRegex = new Regex(operatorPattern);
-            var whiteSpaceRegex = new Regex(@"[\s]+");
-            var numberRegex = new Regex(@"(\d)+(\.[\d])?");
+            var whiteSpaceRegex = new Regex(@"[ \t]+");
+            var newLineRegex = new Regex(@"\n");
+            var numberRegex = new Regex(@"(\d)+(\.[\d]+)?");
             var identifierRegex = new Regex(@"[A-Za-z0-9_]+");
 
             var tokenDefinitions = new List<TokenDefinition>();
@@ -26,12 +27,15 @@ namespace Migraine.Core
             tokenDefinitions.Add(new TokenDefinition(whiteSpaceRegex, TokenType.Whitespace));
             tokenDefinitions.Add(new TokenDefinition(numberRegex, TokenType.Number));
             tokenDefinitions.Add(new TokenDefinition(identifierRegex, TokenType.Identifier));
+            tokenDefinitions.Add(new TokenDefinition(newLineRegex, TokenType.NewLine));
 
             _lexer = new GenericLexer(tokenDefinitions);
         }
 
         public TokenStream Tokenize(String input)
         {
+            input = PreProcessInput(input);
+
             var stream = new TokenStream();
 
             var tokens = _lexer.Tokenize(input) as List<Token>;
@@ -39,6 +43,11 @@ namespace Migraine.Core
                 .ForEach(t => stream.Add(t));
 
             return stream;
+        }
+
+        private String PreProcessInput(String input)
+        {
+            return input.Replace("\r\n", "\n");
         }
     }
 }

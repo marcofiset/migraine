@@ -49,5 +49,15 @@ namespace Migraine.Core.Tests
 
             Verify(program, tokens);
         }
+
+        [Test]
+        public void CanProduceNewLineToken()
+        {
+            var program = @"
+            ";
+
+            var tokens = _lexer.Tokenize(program);
+            Assert.IsTrue(tokens.Consume(TokenType.NewLine));
+        }
     }
 }

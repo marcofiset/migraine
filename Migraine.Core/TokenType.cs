@@ -9,6 +9,7 @@ namespace Migraine.Core
         Number,
         Operator,
         Identifier,
-        Whitespace
+        Whitespace,
+        NewLine
     }
 }
