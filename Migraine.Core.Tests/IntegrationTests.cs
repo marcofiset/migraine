@@ -98,7 +98,10 @@ namespace Migraine.Core.Tests
         [Test]
         public void TestUseVariableInExpression()
         {
-            Assert.AreEqual(-12, EvaluateExpression(@"x = 12; y = 2 * x; z = -y / 2"));
+            Assert.AreEqual(-12, EvaluateExpression(
+                @"x = 12; 
+                  y = 2 * x; 
+                  z = -y / 2;"));
         }
     }
 }

@@ -51,17 +51,18 @@ namespace Migraine.Core
             return ParseExpressionList();
         }
 
-        // ExpressionList = Expression { Terminator, Expression }
+        // ExpressionList = { Expression, Terminator }
         private Node ParseExpressionList()
         {
             var result = new List<Node>();
 
-            result.Add(ParseExpression());
-
             while (!tokenStream.IsEmpty)
             {
-                tokenStream.Expect(TokenType.Terminator);
                 result.Add(ParseExpression());
+
+                // Force a terminator only if we have more than one expression
+                if (!tokenStream.IsEmpty)
+                    tokenStream.Expect(TokenType.Terminator);
             }
 
             return new ExpressionListNode(result);

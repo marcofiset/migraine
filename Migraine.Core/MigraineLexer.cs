@@ -16,8 +16,8 @@ namespace Migraine.Core
             string operatorPattern = String.Format("[{0}]", Regex.Escape("()*/+-="));
 
             var operatorRegex = new Regex(@"[\(\)\*/\+\-=]");
-            var whiteSpaceRegex = new Regex(@"[ \t]+");
-            var terminatorRegex = new Regex(@"[\n;]");
+            var whiteSpaceRegex = new Regex(@"[\s]+");
+            var terminatorRegex = new Regex(@";");
             var numberRegex = new Regex(@"(\d)+(\.[\d]+)?");
             var identifierRegex = new Regex(@"[A-Za-z0-9_]+");
 
