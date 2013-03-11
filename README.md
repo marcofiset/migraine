@@ -34,13 +34,13 @@ learning purposes only and I have a lot of fun writing it. It is still in early 
 
 #### What currently works
 
-- Grammar for simple mathematical expressions (numbers, `+ - * /` operators, parenthesis and operator precedence, no variable support yet)
+- Grammar for simple mathematical expressions (numbers, `+ - * /` operators, parenthesis and operator precedence)
 - Abstract Syntax Tree generation
 - Provides an interface for AST manipulation (through the Visitor pattern)
+- Variable assignment
 
 #### Plans for the near future
 
-- Variable assignment
 - Functions
 - Conditions
 
