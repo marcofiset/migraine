@@ -124,5 +124,12 @@ namespace Brainfuck.Tests
 
             Assert.AreEqual("425", output);
         }
+
+        [Test]
+        public void InterpreterShouldValidateBracketClosing()
+        {
+            string program = "[[][[]]";
+            Assert.Throws<Exception>(() => interpreter.Execute(program));
+        }
     }
 }

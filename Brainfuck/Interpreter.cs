@@ -132,13 +132,30 @@ namespace Brainfuck
         {
             if (program == null) throw new ArgumentNullException("program");
 
+            var brackets = new Stack<char>();
+
             for (int i = 0; i < program.Length; i++)
             {
-                if (!actions.ContainsKey(program[i]))
+                char action = program[i];
+
+                if (!actions.ContainsKey(action))
                     throw new Exception("Invalid character in source file");
+
+                if (action == '[')
+                {
+                    brackets.Push(action);
+                }
+                else if (action == ']')
+                {
+                    if (brackets.Count == 0)
+                        throw new Exception("Opening and ending bracket count does not match");
+
+                    brackets.Pop();
+                }
             }
-            
-            //TODO: Make sure that every loop has a closing bracket
+
+            if (brackets.Count != 0)
+                throw new Exception("Opening and ending bracket cound does not match");
         }
 
         /// <summary>
@@ -147,6 +164,8 @@ namespace Brainfuck
         /// <param name="program">The program to execute (Optional, as it may have been supplied in the constructor)</param>
         public void Execute(String program = "")
         {
+            ValidateSourceFile(program);
+
             if (program != "")
                 ProgramString = program;
 
