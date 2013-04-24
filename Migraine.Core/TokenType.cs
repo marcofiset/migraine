@@ -8,6 +8,7 @@ namespace Migraine.Core
     {
         Number,
         Operator,
+        Symbol,
         Identifier,
         Whitespace,
         Terminator

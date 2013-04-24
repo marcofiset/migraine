@@ -42,8 +42,12 @@
     <Compile Include="GenericLexer.cs" />
     <Compile Include="MigraineLexer.cs" />
     <Compile Include="Nodes\AssignmentNode.cs" />
+    <Compile Include="Nodes\BlockNode.cs" />
     <Compile Include="Nodes\ExpressionListNode.cs" />
+    <Compile Include="Nodes\FunctionCallNode.cs" />
+    <Compile Include="Nodes\FunctionDefinitionNode.cs" />
     <Compile Include="Nodes\IdentifierNode.cs" />
+    <Compile Include="Nodes\IMigraineAstVisitor.cs" />
     <Compile Include="Visitors\IVisitable.cs" />
     <Compile Include="Nodes\Node.cs" />
     <Compile Include="Nodes\NumberNode.cs" />

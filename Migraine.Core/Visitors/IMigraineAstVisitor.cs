@@ -15,5 +15,8 @@ namespace Migraine.Core.Visitors
         TReturn Visit(ExpressionListNode node);
         TReturn Visit(AssignmentNode assignmentNode);
         TReturn Visit(IdentifierNode identifierNode);
+        TReturn Visit(FunctionDefinitionNode functionDefinitionNode);
+        TReturn Visit(BlockNode blockNode);
+        TReturn Visit(FunctionCallNode functionCallNode);
     }
 }

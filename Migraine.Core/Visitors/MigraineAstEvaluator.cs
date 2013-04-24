@@ -76,7 +76,6 @@ namespace Migraine.Core.Visitors
             return lastValue;
         }
 
-
         public Double Visit(AssignmentNode assignmentNode)
         {
             var result = assignmentNode.Expression.Accept(this);
@@ -90,10 +89,24 @@ namespace Migraine.Core.Visitors
             return result;
         }
 
-
         public Double Visit(IdentifierNode identifierNode)
         {
             return variables[identifierNode.Name];
+        }
+
+        public Double Visit(FunctionDefinitionNode functionDefinitionNode)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Double Visit(BlockNode blockNode)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Double Visit(FunctionCallNode functionCallNode)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -13,27 +13,27 @@ namespace Migraine.Core
     /// This is the parser class.
     /// The following grammar is supported :
     /// 
-    /// ExpressionList  = Expression { Terminator, Expression }
-    /// Expression      = Assignment | Operation
-    /// Assignment      = Identifier, "=", Expression
-    /// Operation       = Term { "+" | "-", Term }
-    /// Term            = Factor { "*" | "/", Factor }
-    /// Factor          = [ "-" ], Number | Identifier | ParenExpression
-    /// ParenExpression = "(", Expression, ")"
-    /// Terminator      = NewLine
-    /// 
-    /// Number is defined by the Number token type provided by the Lexer
-    /// 
-    /// I decided not to support the exponent operator because of precedence issue that might arise,
-    /// as there are no universally accepted way of doing it right.
+    /// ExpressionList     = Expression { Terminator, Expression }, Terminator
+    /// Expression         = Assignment | Operation | Block | FunctionCall | FunctionDefinition
+    /// Assignment         = Identifier, "=", Expression
+    /// Operation          = Term { "+" | "-", Term }
+    /// Term               = Factor { "*" | "/", Factor }
+    /// Factor             = [ "-" ], Number | Identifier | ParenExpression
+    /// ParenExpression    = "(", Expression, ")"
+    /// FunctionDefinition = "fun", Identifier, "(", IdentifierList, ")", Block
+    /// Block              = "{", ExpressionList, "}"
+    /// FunctionCall       = Identifier, "(", ArgumentList, ")"
+    /// IdentifierList     = Identifier, { ",", Identifier }
+    /// ArgumentList       = Expression, { ",", Expression }
+    /// Terminator         = ";"
     /// </summary>
     public class Parser
     {
         private TokenStream tokenStream;
 
-        private Token CurrentToken 
-        { 
-            get { return tokenStream.CurrentToken; } 
+        private Token CurrentToken
+        {
+            get { return tokenStream.CurrentToken; }
         }
 
         private Token ConsumedToken
@@ -68,15 +68,117 @@ namespace Migraine.Core
             return new ExpressionListNode(result);
         }
 
-        // Expression = Assignment | Operation
+        // Expression = Assignment | Operation | Block | FunctionCall | FunctionDefinition
         private Node ParseExpression()
         {
-            var token = tokenStream.LookAhead();
+            var currentToken = tokenStream.CurrentToken;
 
-            if (token != null && token.Value == "=")
-                return ParseAssignment();
+            if (currentToken.Type == TokenType.Identifier)
+            {
+                if (currentToken.Value == "fun")
+                    return ParseFunctionDefinition();
+
+                var lookAheadToken = tokenStream.LookAhead();
+
+                if (lookAheadToken != null)
+                {
+                    if (lookAheadToken.Value == "=")
+                        return ParseAssignment();
+
+                    if (lookAheadToken.Value == "(")
+                        return ParseFunctionCall();
+                }
+            }
+
+            if (currentToken.Value == "{")
+                return ParseBlock();
 
             return ParseOperation();
+        }
+
+        // FunctionDefinition = "fun", Identifier, "(", IdentifierList, ")", Block
+        private Node ParseFunctionDefinition()
+        {
+            tokenStream.Expect("fun");
+            tokenStream.Expect(TokenType.Identifier);
+
+            var name = ConsumedToken.Value;
+            tokenStream.Expect("(");
+
+            var arguments = ParseIdentifierList();
+            tokenStream.Expect(")");
+
+            var body = ParseBlock() as BlockNode;
+
+            return new FunctionDefinitionNode(name, arguments, body);
+        }
+
+        // IdentifierList = Identifier, { ",", Identifier }
+        private List<String> ParseIdentifierList()
+        {
+            var arguments = new List<String>();
+
+            while (tokenStream.Consume(TokenType.Identifier))
+            {
+                arguments.Add(ConsumedToken.Value);
+                tokenStream.Consume(",");
+            }
+
+            return arguments;
+        }
+
+        // Block = "{", ExpressionList, "}"
+        private Node ParseBlock()
+        {
+            tokenStream.Expect("{");
+
+            var expressionList = ParseExpressionList() as ExpressionListNode;
+
+            tokenStream.Expect("}");
+
+            return new BlockNode(expressionList.Expressions);
+        }
+
+        // FunctionCall = Identifier, "(", ArgumentList, ")"
+        private Node ParseFunctionCall()
+        {
+            tokenStream.Expect(TokenType.Identifier);
+            var name = ConsumedToken.Value;
+
+            tokenStream.Expect("(");
+
+            if (tokenStream.Consume(")"))
+                return new FunctionCallNode(name);
+            
+            var arguments = ParseArgumentList();
+            tokenStream.Expect(")");
+
+            return new FunctionCallNode(name, arguments);
+        }
+
+        // ArgumentList = Expression, { ",", Expression }
+        private List<Node> ParseArgumentList()
+        {
+            var arguments = new List<Node>();
+
+            do
+            {
+                arguments.Add(ParseExpression());
+            } while (tokenStream.Consume(","));
+
+            return arguments;
+        }
+
+        // Assignment = Identifier, "=", Expression
+        private Node ParseAssignment()
+        {
+            tokenStream.Consume(TokenType.Identifier);
+            var identifier = ConsumedToken.Value;
+
+            tokenStream.Expect("=");
+            var expression = ParseExpression();
+
+            return new AssignmentNode(identifier, expression);
         }
 
         // Operation = Term { "+" | "-", Term }
@@ -101,18 +203,6 @@ namespace Migraine.Core
             return new OperationNode(leftTerm, restOfExpression);
         }
 
-        // Assignment = Identifier, "=", Expression
-        private Node ParseAssignment()
-        {
-            tokenStream.Consume(TokenType.Identifier);
-            var identifier = ConsumedToken.Value;
-
-            tokenStream.Expect("=");
-            var expression = ParseExpression();
-
-            return new AssignmentNode(identifier, expression);
-        }
-
         // Term = Factor { "*" | "/", Factor }
         private Node ParseTerm()
         {
@@ -132,7 +222,7 @@ namespace Migraine.Core
             if (restOfExpression.Count == 0)
                 return leftFactor;
 
-            return new OperationNode(leftFactor, restOfExpression); ;
+            return new OperationNode(leftFactor, restOfExpression);
         }
 
         // Factor = [ "-" ], Number | Identifier | ParenExpression

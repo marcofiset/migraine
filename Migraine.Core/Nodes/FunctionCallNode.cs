@@ -7,13 +7,15 @@ using System.Threading.Tasks;
 
 namespace Migraine.Core.Nodes
 {
-    public class ExpressionListNode : Node
+    public class FunctionCallNode : Node
     {
-        public List<Node> Expressions { get; private set; }
+        public String Name { get; private set; }
+        public List<Node> Arguments { get; private set; }
 
-        public ExpressionListNode(List<Node> nodes)
+        public FunctionCallNode(String name, List<Node> arguments = null)
         {
-            Expressions = nodes as List<Node>;
+            Name = name;
+            Arguments = arguments ?? new List<Node>();
         }
 
         public override TReturn Accept<TReturn>(IMigraineAstVisitor<TReturn> visitor)

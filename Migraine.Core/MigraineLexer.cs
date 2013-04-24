@@ -13,9 +13,7 @@ namespace Migraine.Core
 
         public MigraineLexer()
         {
-            string operatorPattern = String.Format("[{0}]", Regex.Escape("()*/+-="));
-
-            var operatorRegex = new Regex(@"[\(\)\*/\+\-=]");
+            var operatorRegex = new Regex(@"[\(\)\*/\+\-=\{\},]");
             var whiteSpaceRegex = new Regex(@"[\s]+");
             var terminatorRegex = new Regex(@";");
             var numberRegex = new Regex(@"(\d)+(\.[\d]+)?");

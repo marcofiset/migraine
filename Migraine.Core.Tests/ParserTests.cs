@@ -106,5 +106,40 @@ namespace Migraine.Core.Tests
 
             Assert.IsInstanceOf<AssignmentNode>(node.Expressions.First());
         }
+
+        [Test]
+        public void CanParseEmptyFunctionCall()
+        {
+            _tokens.Add(new Token("function", TokenType.Identifier));
+            _tokens.Add(new Token("(", TokenType.Operator));
+            _tokens.Add(new Token(")", TokenType.Operator));
+
+            var node = _parser.Parse() as ExpressionListNode;
+            var functionCall = node.Expressions.First() as FunctionCallNode;
+
+            Assert.IsNotNull(functionCall);
+            Assert.AreEqual("function", functionCall.Name);
+            Assert.AreEqual(0, functionCall.Arguments.Count);
+        }
+
+        [Test]
+        public void CanParseFunctionCallWithArguments()
+        {
+            _tokens.Add(new Token("function", TokenType.Identifier));
+            _tokens.Add(new Token("(", TokenType.Operator));
+            _tokens.Add(new Token("5", TokenType.Number));
+            _tokens.Add(new Token("+", TokenType.Operator));
+            _tokens.Add(new Token("7", TokenType.Number));
+            _tokens.Add(new Token(",", TokenType.Operator));
+            _tokens.Add(new Token("var1", TokenType.Identifier));
+            _tokens.Add(new Token(")", TokenType.Operator));
+
+            var node = _parser.Parse() as ExpressionListNode;
+            var functionCall = node.Expressions.First() as FunctionCallNode;
+
+            Assert.IsNotNull(functionCall);
+            Assert.AreEqual("function", functionCall.Name);
+            Assert.AreEqual(2, functionCall.Arguments.Count);
+        }
     }
 }

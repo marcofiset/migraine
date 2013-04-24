@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Migraine.Core.Nodes
 {
-    public class ExpressionListNode : Node
+    public class BlockNode : Node
     {
-        public List<Node> Expressions { get; private set; }
+        public List<Node> Expressions;
 
-        public ExpressionListNode(List<Node> nodes)
+        public BlockNode(List<Node> expressions)
         {
-            Expressions = nodes as List<Node>;
+            Expressions = expressions;
         }
 
         public override TReturn Accept<TReturn>(IMigraineAstVisitor<TReturn> visitor)

@@ -103,5 +103,11 @@ namespace Migraine.Core.Tests
                   y = 2 * x; 
                   z = -y / 2;"));
         }
+
+        [Test]
+        public void TestMultipleAssignment()
+        {
+            Assert.AreEqual(5, EvaluateExpression("x = y = 5"));
+        }
     }
 }
