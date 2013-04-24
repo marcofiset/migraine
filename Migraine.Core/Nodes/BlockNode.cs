@@ -11,9 +11,9 @@ namespace Migraine.Core.Nodes
     {
         public List<Node> Expressions;
 
-        public BlockNode(List<Node> expressions)
+        public BlockNode(List<Node> expressions = null)
         {
-            Expressions = expressions;
+            Expressions = expressions ?? new List<Node>();
         }
 
         public override TReturn Accept<TReturn>(IMigraineAstVisitor<TReturn> visitor)

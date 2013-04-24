@@ -141,5 +141,30 @@ namespace Migraine.Core.Tests
             Assert.AreEqual("function", functionCall.Name);
             Assert.AreEqual(2, functionCall.Arguments.Count);
         }
+
+        [Test]
+        public void CanParseEmptyFunctionDefinition()
+        {
+            _tokens.Add(new Token("fun", TokenType.Identifier));
+            _tokens.Add(new Token("add", TokenType.Identifier));
+            _tokens.Add(new Token("(", TokenType.Operator));
+            _tokens.Add(new Token("var1", TokenType.Identifier));
+            _tokens.Add(new Token(",", TokenType.Operator));
+            _tokens.Add(new Token("var2", TokenType.Identifier));
+            _tokens.Add(new Token(")", TokenType.Operator));
+            _tokens.Add(new Token("{", TokenType.Operator));
+            _tokens.Add(new Token("}", TokenType.Operator));
+
+            var node = _parser.Parse() as ExpressionListNode;
+            var functionDef = node.Expressions.First() as FunctionDefinitionNode;
+
+            Assert.IsNotNull(functionDef);
+        }
+
+        [Test]
+        public void CanParseBlock()
+        {
+
+        }
     }
 }

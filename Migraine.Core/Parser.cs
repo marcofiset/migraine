@@ -105,7 +105,13 @@ namespace Migraine.Core
             var name = ConsumedToken.Value;
             tokenStream.Expect("(");
 
-            var arguments = ParseIdentifierList();
+            List<String> arguments;
+
+            if (tokenStream.Consume(")"))
+                arguments = new List<String>();
+            else
+                arguments = ParseIdentifierList();
+
             tokenStream.Expect(")");
 
             var body = ParseBlock() as BlockNode;
@@ -131,6 +137,9 @@ namespace Migraine.Core
         private Node ParseBlock()
         {
             tokenStream.Expect("{");
+
+            if (tokenStream.Consume("}"))
+                return new BlockNode();
 
             var expressionList = ParseExpressionList() as ExpressionListNode;
 
