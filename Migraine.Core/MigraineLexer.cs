@@ -13,7 +13,8 @@ namespace Migraine.Core
 
         public MigraineLexer()
         {
-            var operatorRegex = new Regex(@"[\(\)\*/\+\-=\{\},]");
+            var operatorRegex = new Regex(@"[\*/\+\-=]");
+            var symbolRegex = new Regex(@"[\(\)\{\},]");
             var whiteSpaceRegex = new Regex(@"[\s]+");
             var terminatorRegex = new Regex(@";");
             var numberRegex = new Regex(@"(\d)+(\.[\d]+)?");
@@ -22,6 +23,7 @@ namespace Migraine.Core
             var tokenDefinitions = new List<TokenDefinition>();
 
             tokenDefinitions.Add(new TokenDefinition(operatorRegex, TokenType.Operator));
+            tokenDefinitions.Add(new TokenDefinition(symbolRegex, TokenType.Symbol));
             tokenDefinitions.Add(new TokenDefinition(whiteSpaceRegex, TokenType.Whitespace));
             tokenDefinitions.Add(new TokenDefinition(numberRegex, TokenType.Number));
             tokenDefinitions.Add(new TokenDefinition(identifierRegex, TokenType.Identifier));
