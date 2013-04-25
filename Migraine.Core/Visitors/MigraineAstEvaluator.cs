@@ -10,10 +10,13 @@ namespace Migraine.Core.Visitors
     public class MigraineAstEvaluator : IMigraineAstVisitor<Double>
     {
         private Dictionary<String, Double> variables;
+        private Dictionary<String, FunctionDefinitionNode> functions;
+        private Stack<Scope> scopes;
 
         public MigraineAstEvaluator()
         {
             variables = new Dictionary<String, Double>();
+            functions = new Dictionary<String, FunctionDefinitionNode>();
         }
 
         public Double Visit(NumberNode node)
@@ -25,7 +28,7 @@ namespace Migraine.Core.Visitors
         {
             return -node.Node.Accept(this);
         }
-
+        
         public Double Visit(OperationNode node)
         {
             Double result = node.LeftNode.Accept(this);
@@ -96,17 +99,24 @@ namespace Migraine.Core.Visitors
 
         public Double Visit(FunctionDefinitionNode functionDefinitionNode)
         {
-            throw new NotImplementedException();
+            var name = functionDefinitionNode.Name;
+
+            if (functions.ContainsKey(name))
+                throw new Exception(String.Format("Function {0} is already defined"));
+
+            functions.Add(name, functionDefinitionNode);
+
+            return 0;
         }
 
         public Double Visit(BlockNode blockNode)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Visit BlockNode");
         }
 
         public Double Visit(FunctionCallNode functionCallNode)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("Visit FunctionCallNode");
         }
     }
 }

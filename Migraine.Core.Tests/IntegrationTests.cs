@@ -109,5 +109,19 @@ namespace Migraine.Core.Tests
         {
             Assert.AreEqual(5, EvaluateExpression("x = y = 5"));
         }
+
+        //[Test]
+        public void TestSimpleFunction()
+        {
+            var expression = @"
+                fun Add(n1, n2) {
+                    n1 + n2
+                }
+
+                Add(3, 8);
+            ";
+
+            Assert.AreEqual(11, EvaluateExpression(expression));
+        }
     }
 }

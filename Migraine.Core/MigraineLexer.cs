@@ -39,6 +39,7 @@ namespace Migraine.Core
             var stream = new TokenStream();
 
             var tokens = _lexer.Tokenize(input) as List<Token>;
+            //Ignore all whitespace
             tokens.Where(t => t.Type != TokenType.Whitespace).ToList()
                 .ForEach(t => stream.Add(t));
 
@@ -47,7 +48,7 @@ namespace Migraine.Core
 
         private String PreProcessInput(String input)
         {
-            return input.Replace("\r\n", "\n");
+            return input.Replace("\r\n", "\n").Replace("\r", "\n");
         }
     }
 }
