@@ -166,7 +166,13 @@ namespace Migraine.Core
         /// </summary>
         public Token CurrentToken
         {
-            get { return IsEmpty ? null : _queue.Peek(); }
+            get 
+            {
+                if (IsEmpty)
+                    throw new TokenStreamEmptyException();
+
+                return _queue.Peek(); 
+            }
         }
 
         /// <summary>

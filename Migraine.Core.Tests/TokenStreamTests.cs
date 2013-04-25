@@ -54,10 +54,10 @@ namespace Migraine.Core.Tests
         }
 
         [Test]
-        public void CurrentTokenIsNullIfStreamEmpty()
+        public void CurrentTokenThrowsExceptionIfStreamEmpty()
         {
             _tokenStream.Consume();
-            Assert.IsNull(_tokenStream.CurrentToken);
+            Assert.Throws<TokenStreamEmptyException>(() => { var tok = _tokenStream.CurrentToken; });
         }
 
         [Test]
