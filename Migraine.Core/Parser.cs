@@ -141,11 +141,15 @@ namespace Migraine.Core
             if (tokenStream.Consume("}"))
                 return new BlockNode();
 
-            var expressionList = ParseExpressionList() as ExpressionListNode;
+            var expressions = new List<Node>();
 
-            tokenStream.Expect("}");
+            while (!tokenStream.Consume("}"))
+            {
+                expressions.Add(ParseExpression());
+                tokenStream.Consume(TokenType.Terminator);
+            }
 
-            return new BlockNode(expressionList.Expressions);
+            return new BlockNode(expressions);
         }
 
         // FunctionCall = Identifier, "(", ArgumentList, ")"
