@@ -13,8 +13,8 @@ namespace Migraine.Core
     /// This is the parser class.
     /// The following grammar is supported :
     /// 
-    /// ExpressionList     = Expression { Terminator, Expression }, Terminator
-    /// Expression         = Assignment | Operation | Block | FunctionCall | FunctionDefinition
+    /// ExpressionList     = { Expression, { Terminator } } //Terminator when following Assignment, Operation or FuncitonCall
+    /// Expression         = Assignment | Operation | FunctionCall | Block | FunctionDefinition
     /// Assignment         = Identifier, "=", Expression
     /// Operation          = Term { "+" | "-", Term }
     /// Term               = Factor { "*" | "/", Factor }
@@ -35,7 +35,7 @@ namespace Migraine.Core
         {
             get { return tokenStream.CurrentToken; }
         }
-
+        
         private Token ConsumedToken
         {
             get { return tokenStream.ConsumedToken; }
@@ -51,7 +51,6 @@ namespace Migraine.Core
             return ParseExpressionList();
         }
 
-        // ExpressionList = { Expression, Terminator }
         private Node ParseExpressionList()
         {
             var result = new List<Node>();
@@ -60,9 +59,13 @@ namespace Migraine.Core
             {
                 result.Add(ParseExpression());
 
-                // Force a terminator only if we have more than one expression
                 if (!tokenStream.IsEmpty)
-                    tokenStream.Expect(TokenType.Terminator);
+                {
+                    var nodeType = result.Last().GetType();
+
+                    if (nodeType == typeof(AssignmentNode) || nodeType == typeof(OperationNode) || nodeType == typeof(FunctionCallNode))
+                        tokenStream.Expect(TokenType.Terminator);
+                }
             }
 
             return new ExpressionListNode(result);
