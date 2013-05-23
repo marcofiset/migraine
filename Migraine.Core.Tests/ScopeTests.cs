@@ -40,5 +40,25 @@ namespace Migraine.Core.Tests
         {
             Assert.AreEqual(5, _innerScope.ResolveVariable("var1"));
         }
+
+        [Test]
+        public void CanAskIfScopeDefinesVariable()
+        {
+            Assert.True(_innerScope.DefinesVariable("innerVar"));
+            Assert.False(_innerScope.DefinesVariable("var1"));
+        }
+
+        [Test]
+        public void CanAskIfScopeResolvesVariable()
+        {
+            Assert.True(_innerScope.ResolvesVariable("innerVar"));
+            Assert.True(_innerScope.ResolvesVariable("var1"));
+        }
+
+        [Test]
+        public void AssignExistingVariableOverwritesExistingOne()
+        {
+            Assert.Fail();
+        }
     }
 }

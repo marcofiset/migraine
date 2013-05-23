@@ -9,14 +9,17 @@ namespace Migraine.Core.Visitors
 {
     public class MigraineAstEvaluator : IMigraineAstVisitor<Double>
     {
-        private Dictionary<String, Double> variables;
-        private Dictionary<String, FunctionDefinitionNode> functions;
-        private Stack<Scope> scopes;
+        private Stack<Scope> _scopes;
+
+        public Scope CurrentScope
+        {
+            get { return _scopes.Peek(); }
+        }
 
         public MigraineAstEvaluator()
         {
-            variables = new Dictionary<String, Double>();
-            functions = new Dictionary<String, FunctionDefinitionNode>();
+            _scopes = new Stack<Scope>();
+            _scopes.Push(new Scope());
         }
 
         public Double Visit(NumberNode node)
@@ -84,27 +87,24 @@ namespace Migraine.Core.Visitors
             var result = assignmentNode.Expression.Accept(this);
             var name = assignmentNode.Name;
 
-            if (!variables.ContainsKey(name))
-                variables.Add(name, result);
-            else
-                variables[name] = result;
+            CurrentScope.AssignVariable(name, result);
 
             return result;
         }
 
         public Double Visit(IdentifierNode identifierNode)
         {
-            return variables[identifierNode.Name];
+            return CurrentScope.ResolveVariable(identifierNode.Name);
         }
 
         public Double Visit(FunctionDefinitionNode functionDefinitionNode)
         {
             var name = functionDefinitionNode.Name;
 
-            if (functions.ContainsKey(name))
-                throw new Exception(String.Format("Function {0} is already defined"));
+            //if (functions.ContainsKey(name))
+            //    throw new Exception(String.Format("Function {0} is already defined"));
 
-            functions.Add(name, functionDefinitionNode);
+            //functions.Add(name, functionDefinitionNode);
 
             return 0;
         }

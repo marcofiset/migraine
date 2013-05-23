@@ -54,5 +54,33 @@ namespace Migraine.Core
 
             return _parent.ResolveVariable(name);
         }
+
+        /// <summary>
+        /// Indicates whether or not the scope directly defines the variable
+        /// </summary>
+        /// <param name="name">The name of the variable we want to check</param>
+        /// <returns>True or false, if the variable exists or not in the current scope</returns>
+        public Boolean DefinesVariable(String name)
+        {
+            return _variables.ContainsKey(name);
+        }
+
+        /// <summary>
+        /// Indicates whether or not the scope or any of its parent can resolve the variable
+        /// </summary>
+        /// <param name="name">The name of the variable we want to check</param>
+        /// <returns>True or false, if the variable is resolvable by the current scope or its parents</returns>
+        public Boolean ResolvesVariable(String name)
+        {
+            try
+            {
+                var value = ResolveVariable(name);
+                return true;
+            }
+            catch (UndefinedIdentifierException)
+            {
+                return false;
+            }
+        }
     }
 }
