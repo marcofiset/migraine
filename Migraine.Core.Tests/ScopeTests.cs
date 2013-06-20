@@ -58,7 +58,9 @@ namespace Migraine.Core.Tests
         [Test]
         public void AssignExistingVariableOverwritesExistingOne()
         {
-            Assert.Fail();
+            _parentScope.AssignVariable("var1", 10);
+
+            Assert.AreEqual(10, _parentScope.ResolveVariable("var1"));
         }
     }
 }

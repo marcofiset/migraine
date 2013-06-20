@@ -27,13 +27,34 @@ namespace Migraine.Core
         }
 
         /// <summary>
-        /// Defines a variable in the current scope
+        /// Assigns a variable
         /// </summary>
+        /// <remarks>
+        /// If the variable
+        /// </remarks>
         /// <param name="name">The name of the variable</param>
         /// <param name="value">The value of the variable</param>
         public void AssignVariable(String name, Double value)
         {
-            _variables.Add(name, value);
+            var parentScope = this;
+            var assigned = false;
+
+            //Start from this scope, and work up the parents to find the one
+            //that defines the variable.
+            while (parentScope != null)
+            {
+                if (parentScope.DefinesVariable(name))
+                {
+                    parentScope._variables[name] = value;
+                    assigned = true;
+                }
+
+                parentScope = parentScope._parent;
+            }
+
+            //If we did not find the variable, we create it in the current scope
+            if (!assigned)
+                _variables.Add(name, value);
         }
 
         /// <summary>
