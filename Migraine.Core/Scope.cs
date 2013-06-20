@@ -27,7 +27,7 @@ namespace Migraine.Core
         }
 
         /// <summary>
-        /// Defines a variable in the scope
+        /// Defines a variable in the current scope
         /// </summary>
         /// <param name="name">The name of the variable</param>
         /// <param name="value">The value of the variable</param>
@@ -72,15 +72,13 @@ namespace Migraine.Core
         /// <returns>True or false, if the variable is resolvable by the current scope or its parents</returns>
         public Boolean ResolvesVariable(String name)
         {
-            try
-            {
-                var value = ResolveVariable(name);
+            if (_variables.ContainsKey(name))
                 return true;
-            }
-            catch (UndefinedIdentifierException)
-            {
+
+            if (_parent == null)
                 return false;
-            }
+
+            return _parent.ResolvesVariable(name);
         }
     }
 }
