@@ -24,7 +24,7 @@ learning purposes only and I have a lot of fun writing it. It is still in early 
 - Pre-supply inputs to the program
 - Display the output
 
-#### Plans for the near future
+#### Plans for the future
 
 - Step-by-step execution
 - Display the memory cells and their values
@@ -39,7 +39,7 @@ learning purposes only and I have a lot of fun writing it. It is still in early 
 - Provides an interface for AST manipulation (through the Visitor pattern)
 - Variable assignment
 
-#### Plans for the near future
+#### Plans for the future
 
 - Functions
 - Conditions
