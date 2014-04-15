@@ -9,58 +9,58 @@ namespace Migraine.Core.Tests
 {
     public class ScopeTests
     {
-        private Scope _parentScope;
-        private Scope _innerScope;
+        private Scope parentScope;
+        private Scope innerScope;
 
         [SetUp]
         public void SetUp()
         {
-            _parentScope = new Scope();
-            _parentScope.AssignVariable("var1", 5);
-            _parentScope.AssignVariable("var2", 6);
+            parentScope = new Scope();
+            parentScope.AssignVariable("var1", 5);
+            parentScope.AssignVariable("var2", 6);
 
-            _innerScope = new Scope(_parentScope);
-            _innerScope.AssignVariable("innerVar", 12);
+            innerScope = new Scope(parentScope);
+            innerScope.AssignVariable("innerVar", 12);
         }
 
         [Test]
         public void ScopeCanResolveVariableName()
         {
-            Assert.AreEqual(5, _parentScope.ResolveVariable("var1"));
+            Assert.AreEqual(5, parentScope.ResolveVariable("var1"));
         }
 
         [Test]
         public void ResolveThrowsOnUnknownVariable()
         {
-            Assert.Throws<UndefinedIdentifierException>(() => _parentScope.ResolveVariable("unknown"));
+            Assert.Throws<UndefinedIdentifierException>(() => parentScope.ResolveVariable("unknown"));
         }
 
         [Test]
         public void CanResolveVariablesInParentScopes()
         {
-            Assert.AreEqual(5, _innerScope.ResolveVariable("var1"));
+            Assert.AreEqual(5, innerScope.ResolveVariable("var1"));
         }
 
         [Test]
         public void CanAskIfScopeDefinesVariable()
         {
-            Assert.True(_innerScope.DefinesVariable("innerVar"));
-            Assert.False(_innerScope.DefinesVariable("var1"));
+            Assert.True(innerScope.DefinesVariable("innerVar"));
+            Assert.False(innerScope.DefinesVariable("var1"));
         }
 
         [Test]
         public void CanAskIfScopeResolvesVariable()
         {
-            Assert.True(_innerScope.ResolvesVariable("innerVar"));
-            Assert.True(_innerScope.ResolvesVariable("var1"));
+            Assert.True(innerScope.ResolvesVariable("innerVar"));
+            Assert.True(innerScope.ResolvesVariable("var1"));
         }
 
         [Test]
         public void AssignExistingVariableOverwritesExistingOneInParent()
         {
-            _innerScope.AssignVariable("var1", 10);
+            innerScope.AssignVariable("var1", 10);
 
-            Assert.AreEqual(10, _parentScope.ResolveVariable("var1"));
+            Assert.AreEqual(10, parentScope.ResolveVariable("var1"));
         }
     }
 }

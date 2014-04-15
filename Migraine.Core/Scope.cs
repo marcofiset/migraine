@@ -13,8 +13,8 @@ namespace Migraine.Core
 
     public class Scope
     {
-        private Scope _parent;
-        private Dictionary<String, Double> _variables;
+        private Scope parent;
+        private Dictionary<String, Double> variables;
 
         /// <summary>
         /// Creates a new scope instance
@@ -22,8 +22,8 @@ namespace Migraine.Core
         /// <param name="parent">The parent scope that the new one is tied to</param>
         public Scope(Scope parent = null)
         {
-            _parent = parent;
-            _variables = new Dictionary<String, Double>();
+            this.parent = parent;
+            variables = new Dictionary<String, Double>();
         }
 
         /// <summary>
@@ -45,16 +45,16 @@ namespace Migraine.Core
             {
                 if (parentScope.DefinesVariable(name))
                 {
-                    parentScope._variables[name] = value;
+                    parentScope.variables[name] = value;
                     assigned = true;
                 }
 
-                parentScope = parentScope._parent;
+                parentScope = parentScope.parent;
             }
 
             //If we did not find the variable, we create it in the current scope
             if (!assigned)
-                _variables.Add(name, value);
+                variables.Add(name, value);
         }
 
         /// <summary>
@@ -67,13 +67,13 @@ namespace Migraine.Core
         /// <returns>The value of the variable</returns>
         public Double ResolveVariable(String name)
         {
-            if (_variables.ContainsKey(name))
-                return _variables[name];
+            if (variables.ContainsKey(name))
+                return variables[name];
 
-            if (_parent == null)
+            if (parent == null)
                 throw new UndefinedIdentifierException(name);
 
-            return _parent.ResolveVariable(name);
+            return parent.ResolveVariable(name);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Migraine.Core
         /// <returns>True or false, if the variable exists or not in the current scope</returns>
         public Boolean DefinesVariable(String name)
         {
-            return _variables.ContainsKey(name);
+            return variables.ContainsKey(name);
         }
 
         /// <summary>
@@ -93,13 +93,13 @@ namespace Migraine.Core
         /// <returns>True or false, if the variable is resolvable by the current scope or its parents</returns>
         public Boolean ResolvesVariable(String name)
         {
-            if (_variables.ContainsKey(name))
+            if (variables.ContainsKey(name))
                 return true;
 
-            if (_parent == null)
+            if (parent == null)
                 return false;
 
-            return _parent.ResolvesVariable(name);
+            return parent.ResolvesVariable(name);
         }
     }
 }

@@ -9,17 +9,20 @@ namespace Migraine.Core.Visitors
 {
     public class MigraineAstEvaluator : IMigraineAstVisitor<Double>
     {
-        private Stack<Scope> _scopes;
+        private Stack<Scope> scopes;
+        private Dictionary<String, FunctionDefinitionNode> functions;
 
         public Scope CurrentScope
         {
-            get { return _scopes.Peek(); }
+            get { return scopes.Peek(); }
         }
 
-        public MigraineAstEvaluator()
+        public MigraineAstEvaluator(Dictionary<String, FunctionDefinitionNode> functions)
         {
-            _scopes = new Stack<Scope>();
-            _scopes.Push(new Scope());
+            scopes = new Stack<Scope>();
+            scopes.Push(new Scope());
+
+            this.functions = functions;
         }
 
         public Double Visit(NumberNode node)
@@ -42,8 +45,6 @@ namespace Migraine.Core.Visitors
                 var rightNode = pair.Item2;
                 var rightValue = rightNode.Accept(this);
 
-                //There won't be any other operator here so this unflexible
-                //approach is fine. I decided to keep it simple
                 switch (op)
                 {
                     case "+":
@@ -99,24 +100,50 @@ namespace Migraine.Core.Visitors
 
         public Double Visit(FunctionDefinitionNode functionDefinitionNode)
         {
-            var name = functionDefinitionNode.Name;
-
-            //if (functions.ContainsKey(name))
-            //    throw new Exception(String.Format("Function {0} is already defined"));
-
-            //functions.Add(name, functionDefinitionNode);
-
+            //Do nothing, we already have the functions here.
             return 0;
         }
 
         public Double Visit(BlockNode blockNode)
         {
-            throw new NotImplementedException("Visit BlockNode");
+            double lastValue = 0;
+            scopes.Push(new Scope(CurrentScope));
+
+            foreach (var exp in blockNode.Expressions)
+                lastValue = exp.Accept(this);
+
+            scopes.Pop();
+
+            return lastValue;
         }
 
         public Double Visit(FunctionCallNode functionCallNode)
         {
-            throw new NotImplementedException("Visit FunctionCallNode");
+            var functionName = functionCallNode.Name;
+
+            if (!functions.ContainsKey(functionName))
+                throw new Exception(String.Format("Function {0} is undefined.", functionName));
+
+            var functionDefinition = functions[functionName];
+
+            if (functionDefinition.Arguments.Count != functionCallNode.Arguments.Count)
+                throw new Exception(String.Format("Wrong number of arguments passed to function {0}", functionName));
+
+            var functionScope = new Scope(CurrentScope);
+
+            for (int i = 0; i < functionCallNode.Arguments.Count; i++)
+            {
+                var name = functionDefinition.Arguments[i];
+                var value = functionCallNode.Arguments[i].Accept(this);
+
+                functionScope.AssignVariable(name, value);
+            }
+
+            scopes.Push(functionScope);
+            double result = functionDefinition.Body.Accept(this);
+            scopes.Pop();
+
+            return result;
         }
     }
 }

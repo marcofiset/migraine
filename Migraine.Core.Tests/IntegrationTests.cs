@@ -22,12 +22,15 @@ namespace Migraine.Core.Tests
             _lexer = new MigraineLexer();
         }
 
-        private Double EvaluateExpression(String expression)
+        private Double EvaluateExpression(String expression, Dictionary<String, FunctionDefinitionNode> functions = null)
         {
+            if (functions == null)
+                functions = new Dictionary<String, FunctionDefinitionNode>();
+
             _tokenStream = _lexer.Tokenize(expression);
             var parser = new Parser(_tokenStream);
 
-            return parser.Parse().Accept(new MigraineAstEvaluator());
+            return parser.Parse().Accept(new MigraineAstEvaluator(functions));
         }
 
         [Test]
@@ -110,18 +113,23 @@ namespace Migraine.Core.Tests
             Assert.AreEqual(5, EvaluateExpression("x = y = 5"));
         }
 
-        //[Test]
+        [Test]
         public void TestSimpleFunction()
         {
-            var expression = @"
-                fun Add(n1, n2) {
-                    n1 + n2
-                }
+            var restOfExpr = new List<Tuple<String, Node>>();
+            restOfExpr.Add(new Tuple<String, Node>("+", new IdentifierNode("n2")));
 
-                Add(3, 8);
-            ";
+            var operation = new OperationNode(new IdentifierNode("n1"), restOfExpr); 
 
-            Assert.AreEqual(11, EvaluateExpression(expression));
+            var body = new BlockNode(new List<Node>() { operation });
+            var function = new FunctionDefinitionNode("Add", new List<String>() { "n1", "n2" }, body);
+            var functions = new Dictionary<String, FunctionDefinitionNode>();
+
+            functions.Add("Add", function);
+
+            var expression = @"Add(3, 8);";
+
+            Assert.AreEqual(11, EvaluateExpression(expression, functions));
         }
     }
 }
