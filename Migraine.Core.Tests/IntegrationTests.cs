@@ -30,7 +30,11 @@ namespace Migraine.Core.Tests
             _tokenStream = _lexer.Tokenize(expression);
             var parser = new Parser(_tokenStream);
 
-            return parser.Parse().Accept(new MigraineAstEvaluator(functions));
+            var node = parser.Parse();
+            var symbolParser = new SymbolTableParser();
+            node.Accept(symbolParser);
+
+            return node.Accept(new MigraineAstEvaluator(symbolParser.functions));
         }
 
         [Test]
@@ -116,20 +120,33 @@ namespace Migraine.Core.Tests
         [Test]
         public void TestSimpleFunction()
         {
-            var restOfExpr = new List<Tuple<String, Node>>();
-            restOfExpr.Add(new Tuple<String, Node>("+", new IdentifierNode("n2")));
+           var expression = @"
+                fun Add(n1, n2) {
+                    n1 + n2
+                }
 
-            var operation = new OperationNode(new IdentifierNode("n1"), restOfExpr); 
+                Add(3, 8);
+           ";
 
-            var body = new BlockNode(new List<Node>() { operation });
-            var function = new FunctionDefinitionNode("Add", new List<String>() { "n1", "n2" }, body);
-            var functions = new Dictionary<String, FunctionDefinitionNode>();
+            Assert.AreEqual(11, EvaluateExpression(expression));
+        }
 
-            functions.Add("Add", function);
+        [Test]
+        public void MultipleFunctionCalls()
+        {
+            var expression = @"
+                fun square(n) {
+                    n * n
+                }
 
-            var expression = @"Add(3, 8);";
+                fun add2(n) {
+                    n + 2
+                }
 
-            Assert.AreEqual(11, EvaluateExpression(expression, functions));
+                square(5) * add2(4) + square(2);
+            ";
+
+            Assert.AreEqual(154, EvaluateExpression(expression));
         }
     }
 }

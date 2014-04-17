@@ -87,9 +87,6 @@ namespace Migraine.Core
                 {
                     if (lookAheadToken.Value == "=")
                         return ParseAssignment();
-
-                    if (lookAheadToken.Value == "(")
-                        return ParseFunctionCall();
                 }
             }
 
@@ -241,7 +238,7 @@ namespace Migraine.Core
             return new OperationNode(leftFactor, restOfExpression);
         }
 
-        // Factor = [ "-" ], Number | Identifier | ParenExpression
+        // Factor = [ "-" ], Number | Identifier | ParenExpression | FunctionCall
         private Node ParseFactor()
         {
             if (tokenStream.Consume("-"))
@@ -255,8 +252,13 @@ namespace Migraine.Core
 
                 factor = new NumberNode(termValue);
             }
-            else if (tokenStream.Consume(TokenType.Identifier))
+            else if (CurrentToken.Type == TokenType.Identifier)
             {
+                var lookAhead = tokenStream.LookAhead();
+                if (lookAhead != null && lookAhead.Value == "(")
+                    return ParseFunctionCall();
+
+                tokenStream.Consume();
                 factor = new IdentifierNode(tokenStream.ConsumedToken.Value);
             }
             else if (tokenStream.Consume("("))

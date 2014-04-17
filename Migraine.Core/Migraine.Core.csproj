@@ -62,6 +62,7 @@
     <Compile Include="TokenType.cs" />
     <Compile Include="Visitors\IMigraineAstVisitor.cs" />
     <Compile Include="Visitors\MigraineAstEvaluator.cs" />
+    <Compile Include="Visitors\SymbolTableParser.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
