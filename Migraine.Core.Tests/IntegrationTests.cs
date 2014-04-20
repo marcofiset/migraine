@@ -34,7 +34,7 @@ namespace Migraine.Core.Tests
             var symbolParser = new SymbolTableParser();
             node.Accept(symbolParser);
 
-            return node.Accept(new MigraineAstEvaluator(symbolParser.functions));
+            return node.Accept(new MigraineInterpreter(symbolParser.functions));
         }
 
         [Test]

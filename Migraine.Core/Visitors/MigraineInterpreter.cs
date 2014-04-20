@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Migraine.Core.Visitors
 {
-    public class MigraineAstEvaluator : IMigraineAstVisitor<Double>
+    public class MigraineInterpreter : IMigraineAstVisitor<Double>
     {
         private Stack<Scope> scopes;
         private Dictionary<String, FunctionDefinitionNode> functions;
@@ -17,7 +17,7 @@ namespace Migraine.Core.Visitors
             get { return scopes.Peek(); }
         }
 
-        public MigraineAstEvaluator(Dictionary<String, FunctionDefinitionNode> functions)
+        public MigraineInterpreter(Dictionary<String, FunctionDefinitionNode> functions)
         {
             scopes = new Stack<Scope>();
             scopes.Push(new Scope());

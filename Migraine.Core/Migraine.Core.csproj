@@ -61,7 +61,7 @@
     <Compile Include="TokenStream.cs" />
     <Compile Include="TokenType.cs" />
     <Compile Include="Visitors\IMigraineAstVisitor.cs" />
-    <Compile Include="Visitors\MigraineAstEvaluator.cs" />
+    <Compile Include="Visitors\MigraineInterpreter.cs" />
     <Compile Include="Visitors\SymbolTableParser.cs" />
   </ItemGroup>
   <ItemGroup />
