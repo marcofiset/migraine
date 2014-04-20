@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Migraine.Core.Exceptions;
 using NUnit.Framework;
 
 namespace Migraine.Core.Tests
@@ -32,7 +33,7 @@ namespace Migraine.Core.Tests
         [Test]
         public void ResolveThrowsOnUnknownVariable()
         {
-            Assert.Throws<UndefinedIdentifierException>(() => parentScope.ResolveVariable("unknown"));
+            Assert.Throws<UndefinedIdentifier>(() => parentScope.ResolveVariable("unknown"));
         }
 
         [Test]

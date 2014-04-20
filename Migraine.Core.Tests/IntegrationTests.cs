@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Migraine.Core.Exceptions;
 
 namespace Migraine.Core.Tests
 {
@@ -204,7 +205,26 @@ namespace Migraine.Core.Tests
                 n
             ";
 
-            Assert.Throws<UndefinedIdentifierException>(() => EvaluateExpression(expression));
+            Assert.Throws<UndefinedIdentifier>(() => EvaluateExpression(expression));
+        }
+
+        [Test]
+        public void CallingUndefinedFunctionShouldFail()
+        {
+            var expression = "add(2, 4)";
+
+            Assert.Throws<UndefinedFunction>(() => EvaluateExpression(expression));
+        }
+
+        [Test]
+        public void CallingFunctionWithWrongNumberOfArgumentsShouldFail()
+        {
+            var expression = @"
+                fun add(n1, n2) { n1 + n2 }
+                add(5)
+            ";
+
+            Assert.Throws<BadFunctionCall>(() => EvaluateExpression(expression));
         }
     }
 }

@@ -3,14 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Migraine.Core.Exceptions;
 
 namespace Migraine.Core
 {
-    public class UndefinedIdentifierException : Exception
-    {
-        public UndefinedIdentifierException(String identifier) : base("Identifier undefined : " + identifier) { }
-    }
-
     public class Scope
     {
         private Scope parent;
@@ -78,7 +74,7 @@ namespace Migraine.Core
                 return variables[name];
 
             if (parent == null)
-                throw new UndefinedIdentifierException(name);
+                throw new UndefinedIdentifier(name);
 
             return parent.ResolveVariable(name);
         }

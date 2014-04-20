@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Migraine.Core.Exceptions;
 
 namespace Migraine.Core.Visitors
 {
@@ -122,12 +123,12 @@ namespace Migraine.Core.Visitors
             var functionName = functionCallNode.Name;
 
             if (!functions.ContainsKey(functionName))
-                throw new Exception(String.Format("Function {0} is undefined.", functionName));
+                throw new UndefinedFunction(functionName);
 
             var functionDefinition = functions[functionName];
 
             if (functionDefinition.Arguments.Count != functionCallNode.Arguments.Count)
-                throw new Exception(String.Format("Wrong number of arguments passed to function {0}", functionName));
+                throw new BadFunctionCall(functionName, functionDefinition.Arguments.Count, functionCallNode.Arguments.Count);
 
             var functionScope = new Scope(CurrentScope);
 
