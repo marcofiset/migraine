@@ -109,7 +109,7 @@ namespace Migraine.Core.Visitors
         {
             return WithNewScopeDo(scope =>
             {
-                double lastValue = 0;
+                Double lastValue = 0;
 
                 foreach (var exp in blockNode.Expressions)
                     lastValue = exp.Accept(this);

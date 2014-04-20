@@ -226,5 +226,35 @@ namespace Migraine.Core.Tests
 
             Assert.Throws<BadFunctionCall>(() => EvaluateExpression(expression));
         }
+
+        [Test]
+        public void UnaryMinusWithFunctionCall()
+        {
+            var expression = @"
+                fun add(n1, n2) { n1 + n2 }
+                -add(5, 3)
+            ";
+
+            Assert.AreEqual(-8, EvaluateExpression(expression));
+        }
+
+        [Test]
+        public void InnerFunctions()
+        {
+            var expression = @"
+                fun add2ThenSquare(n) {
+                    fun add2(n) {
+                        n + 2
+                    }
+
+                    nn = add2(n);
+                    nn * nn
+                }
+
+                add2ThenSquare(4)
+            ";
+
+            Assert.AreEqual(36, EvaluateExpression(expression));
+        }
     }
 }
