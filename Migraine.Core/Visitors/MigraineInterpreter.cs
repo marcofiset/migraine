@@ -107,18 +107,37 @@ namespace Migraine.Core.Visitors
 
         public Double Visit(BlockNode blockNode)
         {
-            double lastValue = 0;
-            scopes.Push(new Scope(CurrentScope));
+            return WithNewScopeDo(scope =>
+            {
+                double lastValue = 0;
 
-            foreach (var exp in blockNode.Expressions)
-                lastValue = exp.Accept(this);
+                foreach (var exp in blockNode.Expressions)
+                    lastValue = exp.Accept(this);
 
-            scopes.Pop();
-
-            return lastValue;
+                return lastValue;
+            });
+            
         }
 
         public Double Visit(FunctionCallNode functionCallNode)
+        {
+            var functionDefinition = ValidateFunctionCall(functionCallNode);
+
+            return WithNewScopeDo(scope =>
+            {
+                for (int i = 0; i < functionCallNode.Arguments.Count; i++)
+                {
+                    var name = functionDefinition.Arguments[i];
+                    var value = functionCallNode.Arguments[i].Accept(this);
+
+                    scope.DefineVariable(name, value);
+                }
+
+                return functionDefinition.Body.Accept(this);
+            });
+        }
+
+        private FunctionDefinitionNode ValidateFunctionCall(FunctionCallNode functionCallNode)
         {
             var functionName = functionCallNode.Name;
 
@@ -130,18 +149,15 @@ namespace Migraine.Core.Visitors
             if (functionDefinition.Arguments.Count != functionCallNode.Arguments.Count)
                 throw new BadFunctionCall(functionName, functionDefinition.Arguments.Count, functionCallNode.Arguments.Count);
 
-            var functionScope = new Scope(CurrentScope);
+            return functionDefinition;
+        }
 
-            for (int i = 0; i < functionCallNode.Arguments.Count; i++)
-            {
-                var name = functionDefinition.Arguments[i];
-                var value = functionCallNode.Arguments[i].Accept(this);
+        private Double WithNewScopeDo(Func<Scope, Double> action)
+        {
+            var newScope = new Scope(CurrentScope);
 
-                functionScope.DefineVariable(name, value);
-            }
-
-            scopes.Push(functionScope);
-            double result = functionDefinition.Body.Accept(this);
+            scopes.Push(newScope);
+            Double result = action(newScope);
             scopes.Pop();
 
             return result;
