@@ -62,5 +62,14 @@ namespace Migraine.Core.Tests
 
             Assert.AreEqual(10, parentScope.ResolveVariable("var1"));
         }
+
+        [Test]
+        public void DefineVariableCreatesNewVariableDirectlyInScope()
+        {
+            innerScope.DefineVariable("var1", 50);
+
+            Assert.AreEqual(50, innerScope.ResolveVariable("var1"));
+            Assert.AreEqual(5, parentScope.ResolveVariable("var1"));
+        }
     }
 }

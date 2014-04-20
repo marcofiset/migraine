@@ -13,12 +13,12 @@ namespace Migraine.Core
     /// This is the parser class.
     /// The following grammar is supported :
     /// 
-    /// ExpressionList     = { Expression, { Terminator } } //Terminator when following Assignment, Operation or FuncitonCall
-    /// Expression         = Assignment | Operation | FunctionCall | Block | FunctionDefinition
+    /// ExpressionList     = { Expression, { Terminator } } //Terminator when following Assignment, Operation or FunctionCall
+    /// Expression         = Assignment | Operation | Block | FunctionDefinition
     /// Assignment         = Identifier, "=", Expression
     /// Operation          = Term { "+" | "-", Term }
     /// Term               = Factor { "*" | "/", Factor }
-    /// Factor             = [ "-" ], Number | Identifier | ParenExpression
+    /// Factor             = [ "-" ], Number | Identifier | FunctionCall | ParenExpression
     /// ParenExpression    = "(", Expression, ")"
     /// FunctionDefinition = "fun", Identifier, "(", IdentifierList, ")", Block
     /// Block              = "{", ExpressionList, "}"

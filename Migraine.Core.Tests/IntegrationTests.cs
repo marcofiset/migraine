@@ -121,11 +121,11 @@ namespace Migraine.Core.Tests
         public void TestSimpleFunction()
         {
            var expression = @"
-                fun Add(n1, n2) {
+                fun add(n1, n2) {
                     n1 + n2
                 }
 
-                Add(3, 8);
+                add(3, 8);
            ";
 
             Assert.AreEqual(11, EvaluateExpression(expression));
@@ -147,6 +147,64 @@ namespace Migraine.Core.Tests
             ";
 
             Assert.AreEqual(154, EvaluateExpression(expression));
+        }
+
+        [Test]
+        public void FunctionCallsAsArguments()
+        {
+            var expression = @"
+                fun add(n1, n2) {
+                    n1 + n2
+                }
+
+                fun square(n) {
+                    n * n
+                }
+
+                add(square(add(square(2), 2)), square(add(3, 2)))
+            ";
+
+            Assert.AreEqual(61, EvaluateExpression(expression));
+        }
+
+        [Test]
+        public void FunctionsCanBeCalledBeforeBeingDefined()
+        {
+            var expression = @"
+                add(1, 2);
+                
+                fun add(n1, n2) { n1 + n2 }
+            ";
+
+            Assert.AreEqual(0, EvaluateExpression(expression));
+        }
+
+        [Test]
+        public void FunctionParametersDontOverwriteParentScopeVariables()
+        {
+            var expression = @"
+                n1 = 5;
+                n2 = 6;
+
+                fun add(n1, n2) { n1 + n2 }
+                
+                add(7, 8);
+                n1 + n2
+            ";
+
+            Assert.AreEqual(11, EvaluateExpression(expression));
+        }
+
+        [Test]
+        public void BlocksHaveTheirOwnScope()
+        {
+            var expression = @"
+                { n = 6 }
+
+                n
+            ";
+
+            Assert.Throws<UndefinedIdentifierException>(() => EvaluateExpression(expression));
         }
     }
 }

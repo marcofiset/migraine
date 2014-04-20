@@ -136,7 +136,7 @@ namespace Migraine.Core.Visitors
                 var name = functionDefinition.Arguments[i];
                 var value = functionCallNode.Arguments[i].Accept(this);
 
-                functionScope.AssignVariable(name, value);
+                functionScope.DefineVariable(name, value);
             }
 
             scopes.Push(functionScope);
