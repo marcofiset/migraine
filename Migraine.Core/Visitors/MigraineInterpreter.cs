@@ -187,5 +187,10 @@ namespace Migraine.Core.Visitors
         {
             throw new NotImplementedException();
         }
+
+        public double Visit(ConditionNode conditionNode)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

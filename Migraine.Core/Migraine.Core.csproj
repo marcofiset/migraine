@@ -45,6 +45,7 @@
     <Compile Include="MigraineLexer.cs" />
     <Compile Include="Nodes\AssignmentNode.cs" />
     <Compile Include="Nodes\BlockNode.cs" />
+    <Compile Include="Nodes\ConditionNode.cs" />
     <Compile Include="Nodes\ExpressionListNode.cs" />
     <Compile Include="Nodes\FunctionCallNode.cs" />
     <Compile Include="Nodes\FunctionDefinitionNode.cs" />

@@ -82,5 +82,10 @@ namespace Migraine.Core.Visitors
         {
             return 0;
         }
+
+        public double Visit(ConditionNode conditionNode)
+        {
+            return 0;
+        }
     }
 }

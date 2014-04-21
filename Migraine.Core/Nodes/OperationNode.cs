@@ -10,7 +10,7 @@ namespace Migraine.Core.Nodes
     public class OperationNode : Node
     {
         public Node LeftNode { get; private set; }
-        public List<Tuple<string, Node>> RestOfExpression { get; private set; }
+        public IEnumerable<Tuple<string, Node>> RestOfExpression { get; private set; }
 
         public OperationNode(Node leftNode, IEnumerable<Tuple<string, Node>> restOfExpression)
         {
@@ -18,7 +18,7 @@ namespace Migraine.Core.Nodes
             if (restOfExpression == null) throw new ArgumentNullException("restOfExpression");
 
             LeftNode = leftNode;
-            RestOfExpression = restOfExpression as List<Tuple<string, Node>>;
+            RestOfExpression = restOfExpression;
         }
 
         public override TReturn Accept<TReturn>(IMigraineAstVisitor<TReturn> visitor)
