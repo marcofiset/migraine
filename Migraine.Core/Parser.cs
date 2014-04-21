@@ -258,7 +258,7 @@ namespace Migraine.Core
             }
 
             if (factor == null)
-                throw new Exception("Number, identifier or () expression expected");
+                throw new Exception("Number, identifier or function call expected");
 
             return factor;
         }
