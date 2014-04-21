@@ -114,7 +114,7 @@ namespace Migraine.Core
 
             tokenStream.Expect(")");
 
-            var body = ParseBlock() as BlockNode;
+            var body = ParseBlock();
 
             return new FunctionDefinitionNode(name, arguments, body);
         }
@@ -134,7 +134,7 @@ namespace Migraine.Core
         }
 
         // Block = "{", ExpressionList, "}"
-        private Node ParseBlock()
+        private BlockNode ParseBlock()
         {
             tokenStream.Expect("{");
 
@@ -173,7 +173,7 @@ namespace Migraine.Core
         private List<Node> ParseArgumentList()
         {
             var arguments = new List<Node>();
-
+            
             do
             {
                 arguments.Add(ParseExpression());
@@ -197,45 +197,34 @@ namespace Migraine.Core
         // Operation = Term { "+" | "-", Term }
         private Node ParseOperation()
         {
-            var leftTerm = ParseTerm();
-            if (tokenStream.IsEmpty) return leftTerm;
-
-            var restOfExpression = new List<Tuple<string, Node>>();
-
-            while (!tokenStream.IsEmpty && tokenStream.ConsumeAny("+", "-"))
-            {
-                var op = ConsumedToken.Value;
-                var rightTerm = ParseTerm();
-
-                restOfExpression.Add(Tuple.Create(op, rightTerm));
-            }
-
-            if (restOfExpression.Count == 0)
-                return leftTerm;
-
-            return new OperationNode(leftTerm, restOfExpression);
+            return ParseOperators(ParseTerm, "+", "-");
         }
 
         // Term = Factor { "*" | "/", Factor }
         private Node ParseTerm()
         {
-            var leftFactor = ParseFactor();
-            if (tokenStream.IsEmpty) return leftFactor;
+            return ParseOperators(ParseFactor, "*", "/");
+        }
+
+        private Node ParseOperators(Func<Node> operandParser, params string[] operators)
+        {
+            var leftOperand = operandParser();
+            if (tokenStream.IsEmpty) return leftOperand;
 
             var restOfExpression = new List<Tuple<string, Node>>();
 
-            while (!tokenStream.IsEmpty && tokenStream.ConsumeAny("*", "/"))
+            while (!tokenStream.IsEmpty && tokenStream.ConsumeAny(operators))
             {
                 var op = ConsumedToken.Value;
-                var rightFactor = ParseFactor();
+                var rightOperand = operandParser();
 
-                restOfExpression.Add(Tuple.Create(op, rightFactor));
+                restOfExpression.Add(Tuple.Create(op, rightOperand));
             }
 
             if (restOfExpression.Count == 0)
-                return leftFactor;
+                return leftOperand;
 
-            return new OperationNode(leftFactor, restOfExpression);
+            return new OperationNode(leftOperand, restOfExpression);
         }
 
         // Factor = [ "-" ], Number | Identifier | ParenExpression | FunctionCall
