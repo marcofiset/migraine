@@ -7,11 +7,11 @@ namespace Migraine.Core
 {
     public class GenericLexer
     {
-        List<TokenDefinition> tokenDefinitions;
+        IEnumerable<TokenDefinition> tokenDefinitions;
 
         public GenericLexer(IEnumerable<TokenDefinition> tokenDefinitions)
         {
-            this.tokenDefinitions = tokenDefinitions as List<TokenDefinition>;
+            this.tokenDefinitions = tokenDefinitions;
         }
 
         public IEnumerable<Token> Tokenize(String input)
