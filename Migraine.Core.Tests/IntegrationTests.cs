@@ -115,7 +115,7 @@ namespace Migraine.Core.Tests
         [Test]
         public void TestMultipleAssignment()
         {
-            Assert.AreEqual(5, EvaluateExpression("x = y = 5"));
+            Assert.AreEqual(10, EvaluateExpression("x = y = 5; x + y"));
         }
 
         [Test]

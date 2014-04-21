@@ -89,14 +89,14 @@ namespace Migraine.Core.Visitors
             var result = assignmentNode.Expression.Accept(this);
             var name = assignmentNode.Name;
 
-            CurrentScope.AssignVariable(name, result);
+            CurrentScope.Assign(name, result);
 
             return result;
         }
 
         public Double Visit(IdentifierNode identifierNode)
         {
-            return CurrentScope.ResolveVariable(identifierNode.Name);
+            return CurrentScope.Resolve(identifierNode.Name);
         }
 
         public Double Visit(FunctionDefinitionNode functionDefinitionNode)
@@ -130,7 +130,7 @@ namespace Migraine.Core.Visitors
                     var name = functionDefinition.Arguments[i];
                     var value = functionCallNode.Arguments[i].Accept(this);
 
-                    scope.DefineVariable(name, value);
+                    scope.Define(name, value);
                 }
 
                 return functionDefinition.Body.Accept(this);

@@ -30,7 +30,7 @@ namespace Migraine.Core
         /// </remarks>
         /// <param name="name">The name of the variable</param>
         /// <param name="value">The value of the variable</param>
-        public void AssignVariable(String name, Double value)
+        public void Assign(String name, Double value)
         {
             var parentScope = this;
 
@@ -38,7 +38,7 @@ namespace Migraine.Core
             //that defines the variable.
             while (parentScope != null)
             {
-                if (parentScope.DefinesVariable(name))
+                if (parentScope.Defines(name))
                 {
                     parentScope.variables[name] = value;
                     return;
@@ -55,7 +55,7 @@ namespace Migraine.Core
         /// </summary>
         /// <param name="name">Name of the variable</param>
         /// <param name="value">Value of the variable</param>
-        public void DefineVariable(String name, Double value)
+        public void Define(String name, Double value)
         {
             variables.Add(name, value);
         }
@@ -68,7 +68,7 @@ namespace Migraine.Core
         /// </summary>
         /// <param name="name">The name of the variable</param>
         /// <returns>The value of the variable</returns>
-        public Double ResolveVariable(String name)
+        public Double Resolve(String name)
         {
             if (variables.ContainsKey(name))
                 return variables[name];
@@ -76,7 +76,7 @@ namespace Migraine.Core
             if (parent == null)
                 throw new UndefinedIdentifier(name);
 
-            return parent.ResolveVariable(name);
+            return parent.Resolve(name);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Migraine.Core
         /// </summary>
         /// <param name="name">The name of the variable we want to check</param>
         /// <returns>True or false, if the variable exists or not in the current scope</returns>
-        public Boolean DefinesVariable(String name)
+        public Boolean Defines(String name)
         {
             return variables.ContainsKey(name);
         }
@@ -94,7 +94,7 @@ namespace Migraine.Core
         /// </summary>
         /// <param name="name">The name of the variable we want to check</param>
         /// <returns>True or false, if the variable is resolvable by the current scope or its parents</returns>
-        public Boolean ResolvesVariable(String name)
+        public Boolean Resolves(String name)
         {
             if (variables.ContainsKey(name))
                 return true;
@@ -102,7 +102,7 @@ namespace Migraine.Core
             if (parent == null)
                 return false;
 
-            return parent.ResolvesVariable(name);
+            return parent.Resolves(name);
         }
     }
 }
