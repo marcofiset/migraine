@@ -22,15 +22,15 @@ namespace Migraine.Core
 
     public class TokenStream
     {
-        private Queue<Token> _queue;
-        private Token _lastConsumedToken;
+        private Queue<Token> queue;
+        private Token lastConsumedToken;
 
         /// <summary>
         /// Default constructor
         /// </summary>
         public TokenStream()
         {
-            _queue = new Queue<Token>();
+            queue = new Queue<Token>();
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Migraine.Core
         /// <param name="token">The token to add</param>
         public void Add(Token token)
         {
-            _queue.Enqueue(token);
+            queue.Enqueue(token);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Migraine.Core
             if (IsEmpty)
                 throw new TokenStreamEmptyException();
 
-            _lastConsumedToken = _queue.Dequeue();
+            lastConsumedToken = queue.Dequeue();
 
             return true;
         }
@@ -150,7 +150,7 @@ namespace Migraine.Core
         /// </summary>
         public Int32 Count 
         {
-            get { return _queue.Count; }
+            get { return queue.Count; }
         }
         
         /// <summary>
@@ -171,7 +171,7 @@ namespace Migraine.Core
                 if (IsEmpty)
                     throw new TokenStreamEmptyException();
 
-                return _queue.Peek(); 
+                return queue.Peek(); 
             }
         }
 
@@ -180,7 +180,7 @@ namespace Migraine.Core
         /// </summary>
         public Token ConsumedToken 
         {
-            get { return _lastConsumedToken; } 
+            get { return lastConsumedToken; } 
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace Migraine.Core
         /// <returns>The token at the specified position, null if out of range</returns>
         public Token LookAhead(int index = 1)
         {
-            return _queue.ElementAtOrDefault(index);
+            return queue.ElementAtOrDefault(index);
         }
     }
 }

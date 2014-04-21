@@ -13,14 +13,14 @@ namespace Migraine.Core.Tests
     [TestFixture]
     public class IntegrationTests
     {
-        private TokenStream _tokenStream;
-        private MigraineLexer _lexer;
+        private TokenStream tokenStream;
+        private MigraineLexer lexer;
 
         [SetUp]
         public void SetUp()
         {
-            _tokenStream = new TokenStream();
-            _lexer = new MigraineLexer();
+            tokenStream = new TokenStream();
+            lexer = new MigraineLexer();
         }
 
         private Double EvaluateExpression(String expression, Dictionary<String, FunctionDefinitionNode> functions = null)
@@ -28,8 +28,8 @@ namespace Migraine.Core.Tests
             if (functions == null)
                 functions = new Dictionary<String, FunctionDefinitionNode>();
 
-            _tokenStream = _lexer.Tokenize(expression);
-            var parser = new Parser(_tokenStream);
+            tokenStream = lexer.Tokenize(expression);
+            var parser = new Parser(tokenStream);
 
             var node = parser.Parse();
             var symbolParser = new SymbolTableParser();

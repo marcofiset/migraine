@@ -7,8 +7,8 @@ namespace BrainfuckDebugger
 {
     public partial class MainForm : Form, IMainView
     {
-        private MainViewPresenter _presenter;
-        private Int32 _nextInputIndex;
+        private MainViewPresenter presenter;
+        private Int32 nextInputIndex;
 
         /// <summary>
         /// The string of the Brainfuck program
@@ -29,8 +29,8 @@ namespace BrainfuckDebugger
         {
             InitializeComponent();
 
-            _presenter = new MainViewPresenter(this);
-            _nextInputIndex = 0;
+            presenter = new MainViewPresenter(this);
+            nextInputIndex = 0;
         }
 
         /// <summary>
@@ -79,10 +79,10 @@ namespace BrainfuckDebugger
             {
                 var inputValues = inputTextBox.Text.Split(';');
 
-                if (_nextInputIndex >= inputValues.Length)
+                if (nextInputIndex >= inputValues.Length)
                     throw new Exception("You did not supply enough arguments");
 
-                return inputValues[_nextInputIndex++];
+                return inputValues[nextInputIndex++];
             }
         }
 
@@ -108,18 +108,18 @@ namespace BrainfuckDebugger
 
         private void loadFromFileButton_Click(object sender, System.EventArgs e)
         {
-            _presenter.LoadFromFile();
+            presenter.LoadFromFile();
         }
 
         private void executeButton_Click(object sender, System.EventArgs e)
         {
-            _nextInputIndex = 0;
-            _presenter.ExecuteProgram();
+            nextInputIndex = 0;
+            presenter.ExecuteProgram();
         }
 
         private void saveToFileButton_Click(object sender, System.EventArgs e)
         {
-            _presenter.SaveToFile();
+            presenter.SaveToFile();
         }
 
         private void preSupplyInputRadioButton_CheckedChanged(object sender, EventArgs e)

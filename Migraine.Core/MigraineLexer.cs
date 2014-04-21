@@ -9,7 +9,7 @@ namespace Migraine.Core
 {
     public class MigraineLexer
     {
-        private GenericLexer _lexer;
+        private GenericLexer lexer;
 
         public MigraineLexer()
         {
@@ -29,7 +29,7 @@ namespace Migraine.Core
             tokenDefinitions.Add(new TokenDefinition(identifierRegex, TokenType.Identifier));
             tokenDefinitions.Add(new TokenDefinition(terminatorRegex, TokenType.Terminator));
 
-            _lexer = new GenericLexer(tokenDefinitions);
+            lexer = new GenericLexer(tokenDefinitions);
         }
 
         public TokenStream Tokenize(String input)
@@ -38,7 +38,7 @@ namespace Migraine.Core
 
             var stream = new TokenStream();
 
-            var tokens = _lexer.Tokenize(input) as List<Token>;
+            var tokens = lexer.Tokenize(input) as List<Token>;
             //Ignore all whitespace
             tokens.Where(t => t.Type != TokenType.Whitespace).ToList()
                 .ForEach(t => stream.Add(t));

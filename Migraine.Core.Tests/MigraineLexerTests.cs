@@ -10,7 +10,7 @@ namespace Migraine.Core.Tests
     [TestFixture]
     public class MigraineLexerTests
     {
-        private MigraineLexer _lexer;
+        private MigraineLexer lexer;
 
         private void Verify(String program, TokenStream tokens)
         {
@@ -20,14 +20,14 @@ namespace Migraine.Core.Tests
         [SetUp]
         public void SetUp()
         {
-            _lexer = new MigraineLexer();
+            lexer = new MigraineLexer();
         }
 
         [Test]
         public void CanProcudeNumberTokens()
         {
             var program = "5 6.5 0.523";
-            var tokens = _lexer.Tokenize(program);
+            var tokens = lexer.Tokenize(program);
 
             Verify(program, tokens);
         }
@@ -36,7 +36,7 @@ namespace Migraine.Core.Tests
         public void CanProduceIdentifierTokens()
         {
             var program = "var1 var_2 VAR3 Var_4 _898";
-            var tokens = _lexer.Tokenize(program);
+            var tokens = lexer.Tokenize(program);
 
             Verify(program, tokens);
         }
@@ -45,7 +45,7 @@ namespace Migraine.Core.Tests
         public void CanProduceOperatorTokens()
         {
             var program = "+ - * / ( )";
-            var tokens = _lexer.Tokenize(program);
+            var tokens = lexer.Tokenize(program);
 
             Verify(program, tokens);
         }
@@ -55,7 +55,7 @@ namespace Migraine.Core.Tests
         {
             var program = ";";
 
-            var tokens = _lexer.Tokenize(program);
+            var tokens = lexer.Tokenize(program);
             Assert.IsTrue(tokens.Consume(TokenType.Terminator));
         }
 
@@ -63,7 +63,7 @@ namespace Migraine.Core.Tests
         public void CanProduceAssignmentToken()
         {
             var program = "=";
-            var tokens = _lexer.Tokenize(program);
+            var tokens = lexer.Tokenize(program);
 
             Assert.IsTrue(tokens.Consume("="));
         }

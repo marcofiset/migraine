@@ -10,22 +10,22 @@ namespace Migraine.Core.Tests
 {
     public class ParserTests
     {
-        private Parser _parser;
-        private TokenStream _tokens;
+        private Parser parser;
+        private TokenStream tokens;
 
         [SetUp]
         public void SetUp()
         {
-            _tokens = new TokenStream();
-            _parser = new Parser(_tokens);
+            tokens = new TokenStream();
+            parser = new Parser(tokens);
         }
 
         [Test]
         public void CanParseNumberNode()
         {
-            _tokens.Add(new Token("32", TokenType.Number));
+            tokens.Add(new Token("32", TokenType.Number));
 
-            var node = _parser.Parse() as ExpressionListNode;
+            var node = parser.Parse() as ExpressionListNode;
 
             Assert.IsInstanceOf<NumberNode>(node.Expressions.First());
         }
@@ -33,10 +33,10 @@ namespace Migraine.Core.Tests
         [Test]
         public void CanParseUnaryMinusNode()
         {
-            _tokens.Add(new Token("-", TokenType.Operator));
-            _tokens.Add(new Token("23.5", TokenType.Number));
+            tokens.Add(new Token("-", TokenType.Operator));
+            tokens.Add(new Token("23.5", TokenType.Number));
 
-            var node = _parser.Parse() as ExpressionListNode;
+            var node = parser.Parse() as ExpressionListNode;
 
             Assert.IsInstanceOf<UnaryMinusNode>(node.Expressions.First());
         }
@@ -44,11 +44,11 @@ namespace Migraine.Core.Tests
         [Test]
         public void CanParseOperationNode()
         {
-            _tokens.Add(new Token("32", TokenType.Number));
-            _tokens.Add(new Token("-", TokenType.Operator));
-            _tokens.Add(new Token("24", TokenType.Number));
+            tokens.Add(new Token("32", TokenType.Number));
+            tokens.Add(new Token("-", TokenType.Operator));
+            tokens.Add(new Token("24", TokenType.Number));
 
-            var node = _parser.Parse() as ExpressionListNode;
+            var node = parser.Parse() as ExpressionListNode;
 
             Assert.IsInstanceOf<OperationNode>(node.Expressions.First());
         }
@@ -56,17 +56,17 @@ namespace Migraine.Core.Tests
         [Test]
         public void CanParseExpressionListNode()
         {
-            _tokens.Add(new Token("32", TokenType.Number));
-            _tokens.Add(new Token("-", TokenType.Operator));
-            _tokens.Add(new Token("24", TokenType.Number));
+            tokens.Add(new Token("32", TokenType.Number));
+            tokens.Add(new Token("-", TokenType.Operator));
+            tokens.Add(new Token("24", TokenType.Number));
 
-            _tokens.Add(new Token(@"\n", TokenType.Terminator));
+            tokens.Add(new Token(@"\n", TokenType.Terminator));
 
-            _tokens.Add(new Token("8", TokenType.Number));
-            _tokens.Add(new Token("*", TokenType.Operator));
-            _tokens.Add(new Token("9", TokenType.Number));
+            tokens.Add(new Token("8", TokenType.Number));
+            tokens.Add(new Token("*", TokenType.Operator));
+            tokens.Add(new Token("9", TokenType.Number));
 
-            var node = _parser.Parse();
+            var node = parser.Parse();
 
             Assert.IsInstanceOf<ExpressionListNode>(node);
             Assert.AreEqual(2, (node as ExpressionListNode).Expressions.Count());
@@ -75,8 +75,8 @@ namespace Migraine.Core.Tests
         [Test]
         public void CanParseIdentifierNode()
         {
-            _tokens.Add(new Token("number", TokenType.Identifier));
-            var node = _parser.Parse() as ExpressionListNode;
+            tokens.Add(new Token("number", TokenType.Identifier));
+            var node = parser.Parse() as ExpressionListNode;
 
             Assert.IsInstanceOf<IdentifierNode>(node.Expressions.First());
         }
@@ -84,11 +84,11 @@ namespace Migraine.Core.Tests
         [Test]
         public void CanParseAssignmentNode()
         {
-            _tokens.Add(new Token("var1", TokenType.Identifier));
-            _tokens.Add(new Token("=", TokenType.Operator));
-            _tokens.Add(new Token("2.75", TokenType.Number));
+            tokens.Add(new Token("var1", TokenType.Identifier));
+            tokens.Add(new Token("=", TokenType.Operator));
+            tokens.Add(new Token("2.75", TokenType.Number));
 
-            var node = _parser.Parse() as ExpressionListNode;
+            var node = parser.Parse() as ExpressionListNode;
 
             Assert.IsInstanceOf<AssignmentNode>(node.Expressions.First());
         }
@@ -96,13 +96,13 @@ namespace Migraine.Core.Tests
         [Test]
         public void CanParseComplexAssignmentNode()
         {
-            _tokens.Add(new Token("var1", TokenType.Identifier));
-            _tokens.Add(new Token("=", TokenType.Operator));
-            _tokens.Add(new Token("2.75", TokenType.Number));
-            _tokens.Add(new Token("*", TokenType.Operator));
-            _tokens.Add(new Token("x", TokenType.Identifier));
+            tokens.Add(new Token("var1", TokenType.Identifier));
+            tokens.Add(new Token("=", TokenType.Operator));
+            tokens.Add(new Token("2.75", TokenType.Number));
+            tokens.Add(new Token("*", TokenType.Operator));
+            tokens.Add(new Token("x", TokenType.Identifier));
 
-            var node = _parser.Parse() as ExpressionListNode;
+            var node = parser.Parse() as ExpressionListNode;
 
             Assert.IsInstanceOf<AssignmentNode>(node.Expressions.First());
         }
@@ -110,11 +110,11 @@ namespace Migraine.Core.Tests
         [Test]
         public void CanParseEmptyFunctionCall()
         {
-            _tokens.Add(new Token("function", TokenType.Identifier));
-            _tokens.Add(new Token("(", TokenType.Operator));
-            _tokens.Add(new Token(")", TokenType.Operator));
+            tokens.Add(new Token("function", TokenType.Identifier));
+            tokens.Add(new Token("(", TokenType.Operator));
+            tokens.Add(new Token(")", TokenType.Operator));
 
-            var node = _parser.Parse() as ExpressionListNode;
+            var node = parser.Parse() as ExpressionListNode;
             var functionCall = node.Expressions.First() as FunctionCallNode;
 
             Assert.IsNotNull(functionCall);
@@ -125,16 +125,16 @@ namespace Migraine.Core.Tests
         [Test]
         public void CanParseFunctionCallWithArguments()
         {
-            _tokens.Add(new Token("function", TokenType.Identifier));
-            _tokens.Add(new Token("(", TokenType.Operator));
-            _tokens.Add(new Token("5", TokenType.Number));
-            _tokens.Add(new Token("+", TokenType.Operator));
-            _tokens.Add(new Token("7", TokenType.Number));
-            _tokens.Add(new Token(",", TokenType.Operator));
-            _tokens.Add(new Token("var1", TokenType.Identifier));
-            _tokens.Add(new Token(")", TokenType.Operator));
+            tokens.Add(new Token("function", TokenType.Identifier));
+            tokens.Add(new Token("(", TokenType.Operator));
+            tokens.Add(new Token("5", TokenType.Number));
+            tokens.Add(new Token("+", TokenType.Operator));
+            tokens.Add(new Token("7", TokenType.Number));
+            tokens.Add(new Token(",", TokenType.Operator));
+            tokens.Add(new Token("var1", TokenType.Identifier));
+            tokens.Add(new Token(")", TokenType.Operator));
 
-            var node = _parser.Parse() as ExpressionListNode;
+            var node = parser.Parse() as ExpressionListNode;
             var functionCall = node.Expressions.First() as FunctionCallNode;
 
             Assert.IsNotNull(functionCall);
@@ -145,17 +145,17 @@ namespace Migraine.Core.Tests
         [Test]
         public void CanParseEmptyFunctionDefinition()
         {
-            _tokens.Add(new Token("fun", TokenType.Identifier));
-            _tokens.Add(new Token("add", TokenType.Identifier));
-            _tokens.Add(new Token("(", TokenType.Operator));
-            _tokens.Add(new Token("var1", TokenType.Identifier));
-            _tokens.Add(new Token(",", TokenType.Operator));
-            _tokens.Add(new Token("var2", TokenType.Identifier));
-            _tokens.Add(new Token(")", TokenType.Operator));
-            _tokens.Add(new Token("{", TokenType.Operator));
-            _tokens.Add(new Token("}", TokenType.Operator));
+            tokens.Add(new Token("fun", TokenType.Identifier));
+            tokens.Add(new Token("add", TokenType.Identifier));
+            tokens.Add(new Token("(", TokenType.Operator));
+            tokens.Add(new Token("var1", TokenType.Identifier));
+            tokens.Add(new Token(",", TokenType.Operator));
+            tokens.Add(new Token("var2", TokenType.Identifier));
+            tokens.Add(new Token(")", TokenType.Operator));
+            tokens.Add(new Token("{", TokenType.Operator));
+            tokens.Add(new Token("}", TokenType.Operator));
 
-            var node = _parser.Parse() as ExpressionListNode;
+            var node = parser.Parse() as ExpressionListNode;
             var functionDef = node.Expressions.First() as FunctionDefinitionNode;
 
             Assert.IsNotNull(functionDef);
@@ -164,21 +164,21 @@ namespace Migraine.Core.Tests
         [Test]
         public void CanParseNonEmptyFunctionDefinition()
         {
-            _tokens.Add(new Token("fun", TokenType.Identifier));
-            _tokens.Add(new Token("add", TokenType.Identifier));
-            _tokens.Add(new Token("(", TokenType.Operator));
-            _tokens.Add(new Token("var1", TokenType.Identifier));
-            _tokens.Add(new Token(",", TokenType.Operator));
-            _tokens.Add(new Token("var2", TokenType.Identifier));
-            _tokens.Add(new Token(")", TokenType.Operator));
-            _tokens.Add(new Token("{", TokenType.Operator));
-            _tokens.Add(new Token("var1", TokenType.Identifier));
-            _tokens.Add(new Token("+", TokenType.Operator));
-            _tokens.Add(new Token("var2", TokenType.Identifier));
-            _tokens.Add(new Token(";", TokenType.Terminator));
-            _tokens.Add(new Token("}", TokenType.Operator));
+            tokens.Add(new Token("fun", TokenType.Identifier));
+            tokens.Add(new Token("add", TokenType.Identifier));
+            tokens.Add(new Token("(", TokenType.Operator));
+            tokens.Add(new Token("var1", TokenType.Identifier));
+            tokens.Add(new Token(",", TokenType.Operator));
+            tokens.Add(new Token("var2", TokenType.Identifier));
+            tokens.Add(new Token(")", TokenType.Operator));
+            tokens.Add(new Token("{", TokenType.Operator));
+            tokens.Add(new Token("var1", TokenType.Identifier));
+            tokens.Add(new Token("+", TokenType.Operator));
+            tokens.Add(new Token("var2", TokenType.Identifier));
+            tokens.Add(new Token(";", TokenType.Terminator));
+            tokens.Add(new Token("}", TokenType.Operator));
 
-            var node = _parser.Parse() as ExpressionListNode;
+            var node = parser.Parse() as ExpressionListNode;
             var functionDef = node.Expressions.First() as FunctionDefinitionNode;
 
             Assert.IsNotNull(functionDef);
