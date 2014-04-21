@@ -83,7 +83,7 @@ namespace Migraine.Core.Tests
         public void ConsumeOnEmptyStreamThrowsException()
         {
             tokenStream.Consume();
-            Assert.Throws(typeof(TokenStreamEmptyException), () => tokenStream.Consume());
+            Assert.Throws<TokenStreamEmptyException>(() => tokenStream.Consume());
         }
 
         [Test]
