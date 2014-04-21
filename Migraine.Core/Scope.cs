@@ -12,24 +12,12 @@ namespace Migraine.Core
         private Scope<T> parent;
         private Dictionary<String, T> variables;
 
-        /// <summary>
-        /// Creates a new scope instance
-        /// </summary>
-        /// <param name="parent">The parent scope that the new one is tied to</param>
         public Scope(Scope<T> parent = null)
         {
             this.parent = parent;
             variables = new Dictionary<String, T>();
         }
 
-        /// <summary>
-        /// Assigns a variable
-        /// </summary>
-        /// <remarks>
-        /// If the variable
-        /// </remarks>
-        /// <param name="name">The name of the variable</param>
-        /// <param name="value">The value of the variable</param>
         public void Assign(String name, T value)
         {
             var parentScope = this;
@@ -53,8 +41,6 @@ namespace Migraine.Core
         /// <summary>
         /// Defines a variable in the scope, regardless of its parents' variables
         /// </summary>
-        /// <param name="name">Name of the variable</param>
-        /// <param name="value">Value of the variable</param>
         public void Define(String name, T value)
         {
             variables.Add(name, value);
@@ -66,8 +52,6 @@ namespace Migraine.Core
         /// the parent scopes until we find it or utimately throw an exception
         /// if no variable exists with the name given
         /// </summary>
-        /// <param name="name">The name of the variable</param>
-        /// <returns>The value of the variable</returns>
         public T Resolve(String name)
         {
             if (variables.ContainsKey(name))
@@ -82,8 +66,6 @@ namespace Migraine.Core
         /// <summary>
         /// Indicates whether or not the scope directly defines the variable
         /// </summary>
-        /// <param name="name">The name of the variable we want to check</param>
-        /// <returns>True or false, if the variable exists or not in the current scope</returns>
         public Boolean Defines(String name)
         {
             return variables.ContainsKey(name);
@@ -92,8 +74,6 @@ namespace Migraine.Core
         /// <summary>
         /// Indicates whether or not the scope or any of its parent can resolve the variable
         /// </summary>
-        /// <param name="name">The name of the variable we want to check</param>
-        /// <returns>True or false, if the variable is resolvable by the current scope or its parents</returns>
         public Boolean Resolves(String name)
         {
             if (variables.ContainsKey(name))
