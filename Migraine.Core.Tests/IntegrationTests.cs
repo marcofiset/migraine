@@ -213,7 +213,7 @@ namespace Migraine.Core.Tests
         {
             var expression = "add(2, 4)";
 
-            Assert.Throws<UndefinedFunction>(() => EvaluateExpression(expression));
+            Assert.Throws<UndefinedIdentifier>(() => EvaluateExpression(expression));
         }
 
         [Test]

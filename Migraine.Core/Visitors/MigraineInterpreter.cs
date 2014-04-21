@@ -11,11 +11,16 @@ namespace Migraine.Core.Visitors
     public class MigraineInterpreter : IMigraineAstVisitor<Double>
     {
         private Stack<Scope<Double>> variableScopes;
-        private Dictionary<String, FunctionDefinitionNode> functions;
+        private Stack<Scope<FunctionDefinitionNode>> functionScopes;
 
         public Scope<Double> CurrentVariableScope
         {
             get { return variableScopes.Peek(); }
+        }
+
+        private Scope<FunctionDefinitionNode> CurrentFunctionScope
+        {
+            get { return functionScopes.Peek(); }
         }
 
         public MigraineInterpreter(Dictionary<String, FunctionDefinitionNode> functions)
@@ -23,7 +28,13 @@ namespace Migraine.Core.Visitors
             variableScopes = new Stack<Scope<Double>>();
             variableScopes.Push(new Scope<Double>());
 
-            this.functions = functions;
+            functionScopes = new Stack<Scope<FunctionDefinitionNode>>();
+            functionScopes.Push(new Scope<FunctionDefinitionNode>());
+
+            foreach (var func in functions.Keys)
+            {
+                CurrentFunctionScope.Define(func, functions[func]);
+            }
         }
 
         public Double Visit(NumberNode node)
@@ -121,7 +132,7 @@ namespace Migraine.Core.Visitors
 
         public Double Visit(FunctionCallNode functionCallNode)
         {
-            var functionDefinition = ValidateFunctionCall(functionCallNode);
+            var functionDefinition = ResolveFunctionCall(functionCallNode);
 
             return WithNewScopeDo(scope =>
             {
@@ -137,14 +148,10 @@ namespace Migraine.Core.Visitors
             });
         }
 
-        private FunctionDefinitionNode ValidateFunctionCall(FunctionCallNode functionCallNode)
+        private FunctionDefinitionNode ResolveFunctionCall(FunctionCallNode functionCallNode)
         {
             var functionName = functionCallNode.Name;
-
-            if (!functions.ContainsKey(functionName))
-                throw new UndefinedFunction(functionName);
-
-            var functionDefinition = functions[functionName];
+            var functionDefinition = CurrentFunctionScope.Resolve(functionName);
 
             if (functionDefinition.Arguments.Count != functionCallNode.Arguments.Count)
                 throw new BadFunctionCall(functionName, functionDefinition.Arguments.Count, functionCallNode.Arguments.Count);

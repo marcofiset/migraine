@@ -40,7 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\BadFunctionCall.cs" />
-    <Compile Include="Exceptions\UndefinedFunction.cs" />
     <Compile Include="Exceptions\UndefinedIdentifier.cs" />
     <Compile Include="GenericLexer.cs" />
     <Compile Include="MigraineLexer.cs" />
