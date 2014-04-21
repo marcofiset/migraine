@@ -10,18 +10,18 @@ namespace Migraine.Core.Visitors
 {
     public class MigraineInterpreter : IMigraineAstVisitor<Double>
     {
-        private Stack<Scope> scopes;
+        private Stack<Scope<Double>> variableScopes;
         private Dictionary<String, FunctionDefinitionNode> functions;
 
-        public Scope CurrentScope
+        public Scope<Double> CurrentVariableScope
         {
-            get { return scopes.Peek(); }
+            get { return variableScopes.Peek(); }
         }
 
         public MigraineInterpreter(Dictionary<String, FunctionDefinitionNode> functions)
         {
-            scopes = new Stack<Scope>();
-            scopes.Push(new Scope());
+            variableScopes = new Stack<Scope<Double>>();
+            variableScopes.Push(new Scope<Double>());
 
             this.functions = functions;
         }
@@ -89,14 +89,14 @@ namespace Migraine.Core.Visitors
             var result = assignmentNode.Expression.Accept(this);
             var name = assignmentNode.Name;
 
-            CurrentScope.Assign(name, result);
+            CurrentVariableScope.Assign(name, result);
 
             return result;
         }
 
         public Double Visit(IdentifierNode identifierNode)
         {
-            return CurrentScope.Resolve(identifierNode.Name);
+            return CurrentVariableScope.Resolve(identifierNode.Name);
         }
 
         public Double Visit(FunctionDefinitionNode functionDefinitionNode)
@@ -152,13 +152,13 @@ namespace Migraine.Core.Visitors
             return functionDefinition;
         }
 
-        private Double WithNewScopeDo(Func<Scope, Double> action)
+        private Double WithNewScopeDo(Func<Scope<Double>, Double> action)
         {
-            var newScope = new Scope(CurrentScope);
+            var newScope = new Scope<Double>(CurrentVariableScope);
 
-            scopes.Push(newScope);
+            variableScopes.Push(newScope);
             Double result = action(newScope);
-            scopes.Pop();
+            variableScopes.Pop();
 
             return result;
         }

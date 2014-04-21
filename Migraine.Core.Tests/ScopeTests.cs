@@ -10,17 +10,17 @@ namespace Migraine.Core.Tests
 {
     public class ScopeTests
     {
-        private Scope parentScope;
-        private Scope innerScope;
+        private Scope<Double> parentScope;
+        private Scope<Double> innerScope;
 
         [SetUp]
         public void SetUp()
         {
-            parentScope = new Scope();
+            parentScope = new Scope<Double>();
             parentScope.Assign("var1", 5);
             parentScope.Assign("var2", 6);
 
-            innerScope = new Scope(parentScope);
+            innerScope = new Scope<Double>(parentScope);
             innerScope.Assign("innerVar", 12);
         }
 

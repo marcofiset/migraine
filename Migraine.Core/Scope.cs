@@ -7,19 +7,19 @@ using Migraine.Core.Exceptions;
 
 namespace Migraine.Core
 {
-    public class Scope
+    public class Scope<T>
     {
-        private Scope parent;
-        private Dictionary<String, Double> variables;
+        private Scope<T> parent;
+        private Dictionary<String, T> variables;
 
         /// <summary>
         /// Creates a new scope instance
         /// </summary>
         /// <param name="parent">The parent scope that the new one is tied to</param>
-        public Scope(Scope parent = null)
+        public Scope(Scope<T> parent = null)
         {
             this.parent = parent;
-            variables = new Dictionary<String, Double>();
+            variables = new Dictionary<String, T>();
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Migraine.Core
         /// </remarks>
         /// <param name="name">The name of the variable</param>
         /// <param name="value">The value of the variable</param>
-        public void Assign(String name, Double value)
+        public void Assign(String name, T value)
         {
             var parentScope = this;
 
@@ -55,7 +55,7 @@ namespace Migraine.Core
         /// </summary>
         /// <param name="name">Name of the variable</param>
         /// <param name="value">Value of the variable</param>
-        public void Define(String name, Double value)
+        public void Define(String name, T value)
         {
             variables.Add(name, value);
         }
@@ -68,7 +68,7 @@ namespace Migraine.Core
         /// </summary>
         /// <param name="name">The name of the variable</param>
         /// <returns>The value of the variable</returns>
-        public Double Resolve(String name)
+        public T Resolve(String name)
         {
             if (variables.ContainsKey(name))
                 return variables[name];
