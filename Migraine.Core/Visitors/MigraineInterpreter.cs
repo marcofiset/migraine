@@ -118,8 +118,16 @@ namespace Migraine.Core.Visitors
 
         public Double Visit(BlockNode blockNode)
         {
-            return WithNewScopeDo(scope =>
+            return WithNewScopesDo((_, functionScope) =>
             {
+                var parser = new SymbolTableParser();
+                blockNode.Accept(parser);
+
+                foreach (var func in parser.functions.Keys)
+                {
+                    functionScope.Define(func, parser.functions[func]);
+                }
+
                 Double lastValue = 0;
 
                 foreach (var exp in blockNode.Expressions)
@@ -134,14 +142,14 @@ namespace Migraine.Core.Visitors
         {
             var functionDefinition = ResolveFunctionCall(functionCallNode);
 
-            return WithNewScopeDo(scope =>
+            return WithNewScopesDo((variableScope, functionScope) =>
             {
                 for (int i = 0; i < functionCallNode.Arguments.Count; i++)
                 {
                     var name = functionDefinition.Arguments[i];
                     var value = functionCallNode.Arguments[i].Accept(this);
 
-                    scope.Define(name, value);
+                    variableScope.Define(name, value);
                 }
 
                 return functionDefinition.Body.Accept(this);
@@ -159,13 +167,18 @@ namespace Migraine.Core.Visitors
             return functionDefinition;
         }
 
-        private Double WithNewScopeDo(Func<Scope<Double>, Double> action)
+        private Double WithNewScopesDo(Func<Scope<Double>, Scope<FunctionDefinitionNode>, Double> action)
         {
-            var newScope = new Scope<Double>(CurrentVariableScope);
+            var newVariableScope = new Scope<Double>(CurrentVariableScope);
+            var newFunctionScope = new Scope<FunctionDefinitionNode>(CurrentFunctionScope);
 
-            variableScopes.Push(newScope);
-            Double result = action(newScope);
+            variableScopes.Push(newVariableScope);
+            functionScopes.Push(newFunctionScope);
+
+            Double result = action(newVariableScope, newFunctionScope);
+
             variableScopes.Pop();
+            functionScopes.Pop();
 
             return result;
         }

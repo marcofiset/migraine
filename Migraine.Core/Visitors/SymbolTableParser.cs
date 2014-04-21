@@ -55,6 +55,9 @@ namespace Migraine.Core.Visitors
 
         public double Visit(BlockNode blockNode)
         {
+            foreach (var expr in blockNode.Expressions)
+                expr.Accept(this);
+
             return 0;
         }
 
