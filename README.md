@@ -38,10 +38,12 @@ learning purposes only and I have a lot of fun writing it. It is still in early 
 - Abstract Syntax Tree generation
 - Provides an interface for AST manipulation (through the Visitor pattern)
 - Variable assignment
+- Functions
 
 #### Plans for the future
 
-- Functions
-- Conditions
+- Support for other primitive types (strings, booleans)
+- Other assignement operators (+= -= *= /=)
+- Conditions and equality operators (== >= <= > <)
 
 [1]: http://en.wikipedia.org/wiki/Brainfuck
