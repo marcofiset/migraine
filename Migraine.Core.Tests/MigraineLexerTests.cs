@@ -67,5 +67,14 @@ namespace Migraine.Core.Tests
 
             Assert.IsTrue(tokens.Consume("="));
         }
+
+        [Test]
+        public void CanProduceComparisonOperators()
+        {
+            var program = "== > < >= <=";
+            var tokens = lexer.Tokenize(program);
+
+            Verify(program, tokens);
+        }
     }
 }
