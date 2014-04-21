@@ -1,11 +1,8 @@
-﻿using Migraine.Core.Nodes;
-using Migraine.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Globalization;
+using System.Linq;
+using Migraine.Core.Nodes;
 
 namespace Migraine.Core
 {
@@ -14,13 +11,16 @@ namespace Migraine.Core
     /// The following grammar is supported :
     /// 
     /// ExpressionList     = { Expression, { Terminator } } //Terminator when following Assignment, Operation or FunctionCall
-    /// Expression         = Assignment | Operation | Block | FunctionDefinition
+    /// Expression         = Assignment | Operation | Block | FunctionDefinition | IfStatement
     /// Assignment         = Identifier, "=", Expression
     /// Operation          = Term { "+" | "-", Term }
     /// Term               = Factor { "*" | "/", Factor }
     /// Factor             = [ "-" ], Number | Identifier | FunctionCall | ParenExpression
     /// ParenExpression    = "(", Expression, ")"
     /// FunctionDefinition = "fun", Identifier, "(", IdentifierList, ")", Block
+    /// IfStatement        = "if", "(", Condition, ")", Block
+    /// Condition          = Expression, [ ComparisonOperator, Expression ]
+    /// ComparisonOperator = "==" | "<=" | ">=" | "<" | ">"
     /// Block              = "{", ExpressionList, "}"
     /// FunctionCall       = Identifier, "(", ArgumentList, ")"
     /// IdentifierList     = Identifier, { ",", Identifier }
@@ -71,7 +71,7 @@ namespace Migraine.Core
             return new ExpressionListNode(result);
         }
 
-        // Expression = Assignment | Operation | Block | FunctionCall | FunctionDefinition
+        // Expression = Assignment | Operation | Block | FunctionDefinition | IfStatement
         private Node ParseExpression()
         {
             var currentToken = tokenStream.CurrentToken;
@@ -80,6 +80,9 @@ namespace Migraine.Core
             {
                 if (currentToken.Value == "fun")
                     return ParseFunctionDefinition();
+
+                if (currentToken.Value == "if")
+                    return ParseIfStatement();
 
                 var lookAheadToken = tokenStream.LookAhead();
 
@@ -131,6 +134,11 @@ namespace Migraine.Core
             }
 
             return arguments;
+        }
+
+        private Node ParseIfStatement()
+        {
+            throw new Exception("If statements not yet implemented");
         }
 
         // Block = "{", ExpressionList, "}"

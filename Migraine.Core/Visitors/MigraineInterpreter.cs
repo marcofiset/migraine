@@ -182,5 +182,10 @@ namespace Migraine.Core.Visitors
 
             return result;
         }
+
+        public Double Visit(IfStatementNode ifStatementNode)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

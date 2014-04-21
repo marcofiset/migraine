@@ -49,6 +49,7 @@
     <Compile Include="Nodes\FunctionCallNode.cs" />
     <Compile Include="Nodes\FunctionDefinitionNode.cs" />
     <Compile Include="Nodes\IdentifierNode.cs" />
+    <Compile Include="Nodes\IfStatementNode.cs" />
     <Compile Include="Nodes\IMigraineAstVisitor.cs" />
     <Compile Include="Scope.cs" />
     <Compile Include="Visitors\IVisitable.cs" />
