@@ -10,9 +10,9 @@ namespace Migraine.Core.Nodes
     public class OperationNode : Node
     {
         public Node LeftNode { get; private set; }
-        public IEnumerable<Tuple<string, Node>> RestOfExpression { get; private set; }
+        public IEnumerable<Tuple<String, Node>> RestOfExpression { get; private set; }
 
-        public OperationNode(Node leftNode, IEnumerable<Tuple<string, Node>> restOfExpression)
+        public OperationNode(Node leftNode, IEnumerable<Tuple<String, Node>> restOfExpression)
         {
             if (leftNode == null) throw new ArgumentNullException("leftNode");
             if (restOfExpression == null) throw new ArgumentNullException("restOfExpression");
