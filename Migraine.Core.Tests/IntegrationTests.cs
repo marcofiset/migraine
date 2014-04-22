@@ -288,5 +288,53 @@ namespace Migraine.Core.Tests
 
             Assert.AreEqual(6, EvaluateExpression(expression));
         }
+
+        [Test]
+        public void FunctionCallAsIfConditionElements()
+        {
+            var expression = @"
+                fun add(n, m) {
+                    n + m
+                }
+
+                fun square(n) {
+                    n * n
+                }
+
+                x = 8;
+
+                if (add(1, x) == square(3)) {
+                    x = 10;
+                }
+
+                x
+            ";
+
+            Assert.AreEqual(10, EvaluateExpression(expression));
+        }
+
+        [Test]
+        public void UseParentScopeWhenResolvingIdentifierValuesInFunctionCallArguments()
+        {
+            var expression = @"
+                fun add(n, m) {
+                    n + m
+                }
+
+                fun square(n) {
+                    n * n
+                }
+
+                n = 8;
+
+                if (add(1, n) == square(3)) {
+                    n = 10;
+                }
+
+                n
+            ";
+
+            Assert.AreEqual(10, EvaluateExpression(expression));
+        }
     }
 }
