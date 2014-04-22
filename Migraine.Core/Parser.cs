@@ -100,7 +100,7 @@ namespace Migraine.Core
         }
 
         // FunctionDefinition = "fun", Identifier, "(", IdentifierList, ")", Block
-        private Node ParseFunctionDefinition()
+        private FunctionDefinitionNode ParseFunctionDefinition()
         {
             tokenStream.Expect("fun");
             tokenStream.Expect(TokenType.Identifier);
@@ -136,7 +136,7 @@ namespace Migraine.Core
             return arguments;
         }
 
-        private Node ParseIfStatement()
+        private IfStatementNode ParseIfStatement()
         {
             throw new Exception("If statements not yet implemented");
         }
@@ -161,7 +161,7 @@ namespace Migraine.Core
         }
 
         // FunctionCall = Identifier, "(", ArgumentList, ")"
-        private Node ParseFunctionCall()
+        private FunctionCallNode ParseFunctionCall()
         {
             tokenStream.Expect(TokenType.Identifier);
             var name = ConsumedToken.Value;
@@ -191,7 +191,7 @@ namespace Migraine.Core
         }
 
         // Assignment = Identifier, "=", Expression
-        private Node ParseAssignment()
+        private AssignmentNode ParseAssignment()
         {
             tokenStream.Consume(TokenType.Identifier);
             var identifier = ConsumedToken.Value;
