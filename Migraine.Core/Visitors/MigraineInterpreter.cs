@@ -185,12 +185,51 @@ namespace Migraine.Core.Visitors
 
         public Double Visit(IfStatementNode ifStatementNode)
         {
-            throw new NotImplementedException();
+            var conditionValue = ifStatementNode.Condition.Accept(this);
+
+            if (Convert.ToBoolean(conditionValue))
+                return ifStatementNode.Body.Accept(this);
+
+            return 0;
         }
 
         public double Visit(ConditionNode conditionNode)
         {
-            throw new NotImplementedException();
+            var leftValue = conditionNode.LeftOperand.Accept(this);
+
+            if (conditionNode.Operator == null)
+                return leftValue;
+
+            var rightValue = conditionNode.RightOperand.Accept(this);
+            Boolean result;
+
+            switch (conditionNode.Operator)
+            {
+                case "==":
+                    result = leftValue == rightValue;
+                    break;
+
+                case ">=":
+                    result = leftValue >= rightValue;
+                    break;
+
+                case "<=":
+                    result = leftValue <= rightValue;
+                    break;
+
+                case ">":
+                    result = leftValue > rightValue;
+                    break;
+
+                case "<":
+                    result = leftValue < rightValue;
+                    break;
+
+                default:
+                    throw new Exception("Undefined operator :" + conditionNode.Operator);
+            }
+
+            return result ? 1 : 0;
         }
     }
 }

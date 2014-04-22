@@ -136,9 +136,33 @@ namespace Migraine.Core
             return arguments;
         }
 
+        // IfStatement = "if", "(", Condition, ")", Block
         private IfStatementNode ParseIfStatement()
         {
-            throw new Exception("If statements not yet implemented");
+            tokenStream.Expect("if");
+            tokenStream.Expect("(");
+
+            var condition = ParseCondition();
+
+            tokenStream.Expect(")");
+
+            var body = ParseBlock();
+
+            return new IfStatementNode(condition, body);
+        }
+
+        //Condition = Expression, [ ComparisonOperator, Expression ]
+        private ConditionNode ParseCondition()
+        {
+            var left = ParseExpression();
+
+            if (!tokenStream.Consume(TokenType.ComparisonOperator))
+                return new ConditionNode(left);
+
+            var op = ConsumedToken.Value;
+            var right = ParseExpression();
+
+            return new ConditionNode(left, op, right);
         }
 
         // Block = "{", ExpressionList, "}"

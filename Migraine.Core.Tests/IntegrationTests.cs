@@ -256,5 +256,37 @@ namespace Migraine.Core.Tests
 
             Assert.AreEqual(36, EvaluateExpression(expression));
         }
+
+        [Test]
+        public void ContentOfIfBlockNotExecutedIfConditionNotMet()
+        {
+            var expression = @"
+                n = 5;
+                
+                if (0) {
+                    n = 6;
+                }
+
+                n
+            ";
+
+            Assert.AreEqual(5, EvaluateExpression(expression));
+        }
+
+        [Test]
+        public void IfBlockExecutedIfConditionMet()
+        {
+            var expression = @"
+                n = 5;
+                
+                if (n == 5) {
+                    n = 6;
+                }
+
+                n
+            ";
+
+            Assert.AreEqual(6, EvaluateExpression(expression));
+        }
     }
 }

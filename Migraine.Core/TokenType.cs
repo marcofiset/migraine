@@ -11,6 +11,7 @@ namespace Migraine.Core
         Symbol,
         Identifier,
         Whitespace,
-        Terminator
+        Terminator,
+        ComparisonOperator
     }
 }

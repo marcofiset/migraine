@@ -23,7 +23,7 @@ namespace Migraine.Core
 
             var tokenDefinitions = new List<TokenDefinition>();
 
-            tokenDefinitions.Add(new TokenDefinition(comparisonOperatorsRegex, TokenType.Operator));
+            tokenDefinitions.Add(new TokenDefinition(comparisonOperatorsRegex, TokenType.ComparisonOperator));
             tokenDefinitions.Add(new TokenDefinition(operatorRegex, TokenType.Operator));
             tokenDefinitions.Add(new TokenDefinition(symbolRegex, TokenType.Symbol));
             tokenDefinitions.Add(new TokenDefinition(whiteSpaceRegex, TokenType.Whitespace));

@@ -183,5 +183,24 @@ namespace Migraine.Core.Tests
 
             Assert.IsNotNull(functionDef);
         }
+
+        [Test]
+        public void CanParseIfStatement()
+        {
+            tokens.Add(new Token("if", TokenType.Identifier));
+            tokens.Add(new Token("(", TokenType.Operator));
+            tokens.Add(new Token("1", TokenType.Number));
+            tokens.Add(new Token(")", TokenType.Operator));
+            tokens.Add(new Token("{", TokenType.Operator));
+            tokens.Add(new Token("n", TokenType.Identifier));
+            tokens.Add(new Token("=", TokenType.Operator));
+            tokens.Add(new Token("6", TokenType.Number));
+            tokens.Add(new Token("}", TokenType.Operator));
+
+            var node = parser.Parse() as ExpressionListNode;
+            var ifStatement = node.Expressions.First() as IfStatementNode;
+
+            Assert.IsNotNull(ifStatement);
+        }
     }
 }
