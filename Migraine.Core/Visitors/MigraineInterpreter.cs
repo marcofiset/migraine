@@ -141,13 +141,14 @@ namespace Migraine.Core.Visitors
         public Double Visit(FunctionCallNode functionCallNode)
         {
             var functionDefinition = ResolveFunctionCall(functionCallNode);
+            var arguments = ResolveArgumentValues(functionCallNode);
 
             return WithNewScopesDo((variableScope, functionScope) =>
             {
                 for (int i = 0; i < functionCallNode.Arguments.Count; i++)
                 {
                     var name = functionDefinition.Arguments[i];
-                    var value = functionCallNode.Arguments[i].Accept(this);
+                    var value = arguments[i];
 
                     variableScope.Define(name, value);
                 }
@@ -156,13 +157,21 @@ namespace Migraine.Core.Visitors
             });
         }
 
+        private List<Double> ResolveArgumentValues(FunctionCallNode functionCallNode)
+        {
+            return functionCallNode.Arguments.Select(node => { return node.Accept(this); }).ToList();
+        }
+
         private FunctionDefinitionNode ResolveFunctionCall(FunctionCallNode functionCallNode)
         {
             var functionName = functionCallNode.Name;
             var functionDefinition = CurrentFunctionScope.Resolve(functionName);
 
-            if (functionDefinition.Arguments.Count != functionCallNode.Arguments.Count)
-                throw new BadFunctionCall(functionName, functionDefinition.Arguments.Count, functionCallNode.Arguments.Count);
+            int expectedCount = functionDefinition.Arguments.Count;
+            int actualCount = functionCallNode.Arguments.Count;
+
+            if (expectedCount != actualCount)
+                throw new BadFunctionCall(functionName, expectedCount, actualCount);
 
             return functionDefinition;
         }
